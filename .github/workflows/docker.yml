@@ -1,0 +1,19 @@
+name: docker
+
+on:
+  push:
+    paths: ["**/Dockerfile", "docker-compose.yml", "docker/**", ".github/workflows/docker.yml"]
+  pull_request:
+    paths: ["**/Dockerfile", "docker-compose.yml", "docker/**", ".github/workflows/docker.yml"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose config -q
+      - run: docker build -t tatlas-postgres:ci docker/postgres
+      - run: docker build --target dev -t tatlas-backend:ci backend
+      - run: docker build -t tatlas-ai-service:ci ai-service
+      - name: ai-service tests inside the image
+        run: docker run --rm tatlas-ai-service:ci pytest -q

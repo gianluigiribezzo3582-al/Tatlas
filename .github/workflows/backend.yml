@@ -1,0 +1,47 @@
+name: backend
+
+on:
+  push:
+    paths: ["backend/**", "docker/postgres/**", ".github/workflows/backend.yml"]
+  pull_request:
+    paths: ["backend/**", "docker/postgres/**", ".github/workflows/backend.yml"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start Postgres (PostGIS + pgvector)
+        working-directory: docker/postgres
+        run: |
+          docker build -t tatlas-postgres:ci .
+          docker run -d --name pg -p 5432:5432 \
+            -e POSTGRES_DB=tatlas -e POSTGRES_USER=tatlas -e POSTGRES_PASSWORD=secret \
+            tatlas-postgres:ci
+          for i in $(seq 1 30); do
+            docker exec pg pg_isready -U tatlas -d tatlas_test && break
+            sleep 2
+          done
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: pdo_pgsql, intl, gd, exif
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ hashFiles('backend/composer.lock') }}
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: cp .env.example .env && php artisan key:generate
+      - name: Lint (Pint)
+        run: vendor/bin/pint --test
+      - name: Tests (Pest)
+        run: vendor/bin/pest
