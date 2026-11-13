@@ -1,4 +1,62 @@
 {
   "app": { "name": "Tatlas", "tagline": "Trova il tatuatore giusto vicino a te" },
-  "map": { "attribution": "© OpenStreetMap contributors" }
+  "common": {
+    "loading": "Caricamento…",
+    "loadError": "Impossibile caricare i dati.",
+    "retry": "Riprova",
+    "back": "Indietro"
+  },
+  "map": {
+    "studiosInArea_one": "{{count}} studio in quest'area",
+    "studiosInArea_other": "{{count}} studi in quest'area",
+    "empty": "Nessuno studio qui. Sposta la mappa o togli i filtri.",
+    "error": "Server non raggiungibile",
+    "errorHint": "Controlla che il backend sia avviato e che l'indirizzo del server nelle Impostazioni sia corretto.",
+    "attribution": "Dati © OpenStreetMap contributors (ODbL)"
+  },
+  "filters": { "guestUpcoming": "Guest spot in arrivo" },
+  "location": {
+    "ask": "📍 Mostra gli studi vicino a te: tocca per usare la tua posizione (solo mentre usi l'app).",
+    "openSettings": "📍 Posizione disattivata per Tatlas. Tocca per aprire le impostazioni.",
+    "me": "La mia posizione"
+  },
+  "studio": {
+    "artistsCount_one": "{{count}} artista",
+    "artistsCount_other": "{{count}} artisti",
+    "guestSoon": "Guest in arrivo",
+    "contacts": "Contatti",
+    "directions": "Indicazioni stradali",
+    "call": "Chiama",
+    "website": "Sito web",
+    "hours": "Orari",
+    "residents": "Artisti dello studio",
+    "guests": "Guest spot",
+    "noArtists": "Nessun artista ha ancora collegato il proprio profilo a questo studio.",
+    "claimTitle": "Lavori qui?",
+    "claimHint": "A breve potrai rivendicare lo studio e creare il tuo profilo artista dall'app."
+  },
+  "artist": {
+    "about": "Chi sono",
+    "portfolio": "Portfolio",
+    "noWorks": "Nessun lavoro pubblicato.",
+    "whereToFind": "Dove trovarlo",
+    "resident": "Resident",
+    "guest": "Guest",
+    "walkIn": "Accetta walk-in",
+    "links": "Link",
+    "share": "Condividi profilo"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "server": "Server",
+    "serverHint": "Indirizzo del backend Tatlas. Per i test sul telefono usa l'IP del PC nella stessa rete Wi-Fi, per esempio http://192.168.1.20:8000",
+    "saveAndTest": "Salva e prova",
+    "reset": "Ripristina",
+    "default": "Predefinito",
+    "invalid": "Indirizzo non valido.",
+    "connected": "✓ Connesso al server.",
+    "unreachable": "Salvato, ma il server non risponde. Controlla IP, porta e che telefono e PC siano sulla stessa rete.",
+    "about": "Informazioni",
+    "osmLicense": "Licenza dei dati OpenStreetMap"
+  }
 }

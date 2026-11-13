@@ -1,4 +1,4 @@
-import { env } from '@/config/env';
+import { getApiUrl } from '@/config/server';
 
 export class ApiError extends Error {
   constructor(
@@ -13,11 +13,11 @@ export class ApiError extends Error {
 
 type Query = Record<string, string | number | boolean | undefined | null>;
 
-export function buildUrl(path: string, query: Query = {}, base = env.apiUrl): string {
+export function buildUrl(path: string, query: Query = {}, base = getApiUrl()): string {
   const url = new URL(base.replace(/\/$/, '') + '/' + path.replace(/^\//, ''));
   for (const [key, value] of Object.entries(query)) {
-    if (value !== undefined && value !== null && value !== '') {
-      url.searchParams.set(key, String(value));
+    if (value !== undefined && value !== null && value !== '' && value !== false) {
+      url.searchParams.set(key, value === true ? '1' : String(value));
     }
   }
   return url.toString();
