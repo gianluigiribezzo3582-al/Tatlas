@@ -1,0 +1,4 @@
+{
+  "app": { "name": "Tatlas", "tagline": "Trova il tatuatore giusto vicino a te" },
+  "map": { "attribution": "© OpenStreetMap contributors" }
+}
