@@ -32,7 +32,7 @@ class Work extends Model
     /** @return BelongsToMany<Style, $this> */
     public function styles(): BelongsToMany
     {
-        return $this->belongsToMany(Style::class)->withPivot(['weight', 'source'])->withTimestamps();
+        return $this->belongsToMany(Style::class, 'work_style')->withPivot(['weight', 'source'])->withTimestamps();
     }
 
     /** @return MorphToMany<Tag, $this> */

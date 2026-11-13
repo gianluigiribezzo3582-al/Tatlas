@@ -58,7 +58,7 @@ class Studio extends Model
     /** @param Builder<Studio> $query */
     public function scopeVisible(Builder $query): void
     {
-        $query->whereNull('hidden_at');
+        $query->whereNull($query->qualifyColumn('hidden_at'));
     }
 
     public function isLocked(string $field): bool
