@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: docker compose config -q
       - run: docker build -t tatlas-postgres:ci docker/postgres
       - run: docker build --target dev -t tatlas-backend:ci backend

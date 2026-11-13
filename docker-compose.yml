@@ -24,7 +24,9 @@ services:
       context: ./backend
       target: dev
     image: tatlas-backend:dev
-    env_file: ./backend/.env
+    env_file:
+      - path: ./backend/.env
+        required: false
     environment:
       DB_HOST: postgres
       AI_SERVICE_URL: http://ai-service:8001
@@ -40,7 +42,9 @@ services:
   worker:
     image: tatlas-backend:dev
     command: ["php", "/var/www/html/artisan", "queue:work", "--tries=3", "--backoff=10"]
-    env_file: ./backend/.env
+    env_file:
+      - path: ./backend/.env
+        required: false
     environment:
       DB_HOST: postgres
       AI_SERVICE_URL: http://ai-service:8001
