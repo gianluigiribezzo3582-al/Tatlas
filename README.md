@@ -33,7 +33,23 @@ docker compose exec app php artisan migrate --seed
 
 # 4. Importa gli studi di tatuaggio da OpenStreetMap (default: Città Metropolitana di Bari)
 docker compose exec app php artisan tatlas:import-osm
+
+# 5. (facoltativo) Artisti FITTIZI per provare l'app; si rimuovono con --purge
+docker compose exec app php artisan storage:link
+docker compose exec app php artisan tatlas:demo-data
 ```
+
+## API v1 (riepilogo)
+
+| Metodo | Endpoint | Note |
+|---|---|---|
+| GET | `/api/v1/studios?bbox=w,s,e,n` oppure `?lat=&lng=&radius=` | Filtri `style`, `guest_upcoming=1`, `limit` (max 1000). Con `lat`/`lng` ordina per distanza e restituisce `distance_m` |
+| GET | `/api/v1/studios/{id}` | Contatti, orari, artisti resident e guest attuali o futuri, attribuzione OSM |
+| GET | `/api/v1/artists?…` | Stessi filtri: artisti trovati tramite i loro studi |
+| GET | `/api/v1/artists/{slug}` | Stili, portfolio, studi e guest spot |
+| GET | `/api/v1/styles` | Tassonomia ad albero, localizzata in base ad `Accept-Language` |
+| POST | `/api/v1/auth/register`, `/auth/login` | Restituiscono un token Sanctum (`device_name` obbligatorio; per la registrazione serve `accept_privacy`) |
+| POST | `/api/v1/auth/logout` · GET `/api/v1/me` | Header `Authorization: Bearer <token>` |
 
 Servizi:
 
@@ -84,8 +100,10 @@ npm start
 
 L'URL dell'API si imposta con `EXPO_PUBLIC_API_URL`. Il default `http://10.0.2.2:8000/api/v1` funziona sull'emulatore Android. Su un telefono fisico usa l'IP del PC nella rete locale, per esempio `EXPO_PUBLIC_API_URL=http://192.168.1.20:8000/api/v1 npm start`.
 
-La guida completa alla build EAS installabile sul telefono arriverà con il task G1.
+**APK di test pronto da installare:** viene compilato da GitHub Actions (workflow `android-apk`) a ogni modifica di `mobile/`. Guida passo passo, compreso come collegare il telefono al PC: [docs/TESTING.md](docs/TESTING.md).
+
+Per la build EAS (Play Store e iOS) servirà un account Expo; la guida arriverà con il task G1.
 
 ## Stato
 
-Vedi il piano della Fase 1 in `docs/DECISIONS.md` (sezione Roadmap). Fatto finora: setup del monorepo (A1–A6), modello dati (B1), tassonomia stili (B2), import OSM (B3–B4).
+Vedi il piano della Fase 1 in `docs/DECISIONS.md` (sezione Roadmap). Fatto finora: setup (A1–A6), modello dati, stili, import OSM e geocoder (B1–B5), API v1 (C1–C4), mappa e schede nell'app (D1–D4, E1), APK di test via CI.

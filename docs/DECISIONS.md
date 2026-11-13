@@ -71,6 +71,30 @@ I tag OSM grezzi restano in `osm_tags` (jsonb), utili per futuri mapping senza d
 **Decisione:** `pyproject.toml` ha tre extra: `dev` (test e lint), `ml` (torch, transformers, sentence-transformers) e il core minimo. In Fase 1 l'immagine non scarica i modelli (`AI_LOAD_MODELS=false`).
 **Perché:** immagini piccole e CI veloce finché la ricerca intelligente non serve. Prima di attivare SigLIP 2, nella Fase 2, vanno verificate la licenza (Apache 2.0) e la qualità sulle query in italiano.
 
+## ADR-015 · API: bbox in ordine GeoJSON, ricerca artisti tramite i loro studi
+**Data:** 2026-11-13
+**Decisione:** il parametro `bbox` dell'API è `west,south,east,north`, lo stesso ordine dei bounds di MapLibre e dello standard GeoJSON. Il comando OSM invece usa l'ordine di Overpass (`south,west,north,east`), perché è quello che si copia da overpass-turbo. Gli artisti si localizzano tramite i loro studi: resident, più i guest in corso o che iniziano entro 60 giorni (`AreaFilter::GUEST_HORIZON_DAYS`). `distance_m` è la distanza dallo studio più vicino. Il filtro per stile include i sotto-stili tramite una CTE ricorsiva.
+**Perché:** l'app passa i bounds della mappa così come sono, senza conversioni in cui è facile sbagliare.
+
+## ADR-016 · Dati demo espliciti e rimovibili
+**Decisione:** `tatlas:demo-data` crea artisti fittizi con slug `demo-*`, bio dichiaratamente demo e immagini astratte generate con GD (nessuna foto reale). Non gira in produzione e `--purge` lo annulla. Gli studi OSM non vengono mai cancellati dal purge.
+**Perché:** finché i tatuatori non si registrano, le schede artista e i filtri non si possono provare in altro modo.
+
+## ADR-017 · URL delle immagini costruiti dall'host della richiesta (disco locale)
+**Decisione:** con il disco `public`, gli URL del portfolio usano lo schema e l'host della richiesta, non `APP_URL`. Su R2/S3 si usa l'URL del disco.
+**Perché:** un telefono che chiama `http://192.168.x.x:8000` deve ricevere immagini allo stesso indirizzo, senza dover cambiare `.env`.
+
+## ADR-018 · APK di test compilato da GitHub Actions; server configurabile a runtime
+**Decisione:** il workflow `android-apk` esegue `expo prebuild` + `gradlew assembleRelease` (solo arm64, firma di debug) e pubblica l'APK come artifact. Il traffico HTTP in chiaro è abilitato solo se `TATLAS_ALLOW_CLEARTEXT=1` (`expo-build-properties`). L'URL del backend si può cambiare dalle Impostazioni dell'app ed è salvato in AsyncStorage.
+**Perché:** permette di provare l'app su un telefono vero senza account Expo e senza Android SDK in locale; lo stesso APK funziona con qualunque IP di rete locale. Per gli store si userà EAS (profili già presenti in `eas.json`) senza HTTP in chiaro.
+
+## ADR-019 · Bottom sheet senza dipendenze native
+**Decisione:** un bottom sheet a due posizioni scritto con `Animated` e `PanResponder`, invece di `@gorhom/bottom-sheet`.
+**Perché:** meno dipendenze native (reanimated, gesture-handler) da allineare con RN 0.88 e New Architecture nell'MVP. Se servono più snap point o gesti più fluidi, si sostituisce il componente senza toccare il resto.
+
+## ADR-020 · Tile della mappa: OpenFreeMap "positron" dietro `TileSource`
+**Decisione:** `mobile/src/map/tiles.ts` definisce sorgente, URL dello stile e attribuzione. Per ora si usa lo stile positron di OpenFreeMap, chiaro e poco invasivo sotto i marker. Il passaggio a Protomaps si fa modificando solo questo file. Il riquadro di attribuzione nativo di MapLibre resta attivo e la lista riporta anche «Dati © OpenStreetMap contributors (ODbL)».
+
 ---
 
 ## Roadmap Fase 1
@@ -81,9 +105,11 @@ I tag OSM grezzi restano in `osm_tags` (jsonb), utili per futuri mapping senza d
 | B1 Modello dati | ✅ |
 | B2 Tassonomia stili | ✅ |
 | B3–B4 Client Overpass + comando import idempotente | ✅ |
-| B5 Geocoder Photon (cache + rate limit) | ⏳ |
-| C1–C4 API v1 (bbox/raggio, dettaglio, filtri, auth) | ⏳ |
-| D1–D4 Mappa nell'app | ⏳ |
-| E1–E2 Schermate profilo + pagina web pubblica | ⏳ |
+| B5 Geocoder Photon (cache + rate limit) | ✅ |
+| C1–C4 API v1 (bbox/raggio, dettaglio, filtri, auth) | ✅ |
+| D1–D4 Mappa nell'app | ✅ |
+| E1 Schermate studio e artista | ✅ |
+| E2 Pagina web pubblica artista + App Links | ⏳ |
 | F1–F4 Claim, admin, portfolio, stili e guest spot | ⏳ |
-| G1–G2 Build EAS sul telefono, privacy/GDPR | ⏳ |
+| G0 APK di test via GitHub Actions | ✅ |
+| G1–G2 Build EAS, privacy/GDPR | ⏳ |
