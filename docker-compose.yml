@@ -1,0 +1,62 @@
+# Local development stack. See README.md for usage.
+name: tatlas
+
+services:
+  postgres:
+    build: ./docker/postgres
+    image: tatlas-postgres:dev
+    environment:
+      POSTGRES_DB: tatlas
+      POSTGRES_USER: tatlas
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tatlas -d tatlas"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build:
+      context: ./backend
+      target: dev
+    image: tatlas-backend:dev
+    env_file: ./backend/.env
+    environment:
+      DB_HOST: postgres
+      AI_SERVICE_URL: http://ai-service:8001
+      PHP_OPCACHE_ENABLE: "0"
+    ports:
+      - "8000:8080"
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    image: tatlas-backend:dev
+    command: ["php", "/var/www/html/artisan", "queue:work", "--tries=3", "--backoff=10"]
+    env_file: ./backend/.env
+    environment:
+      DB_HOST: postgres
+      AI_SERVICE_URL: http://ai-service:8001
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      app:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+
+  ai-service:
+    build: ./ai-service
+    image: tatlas-ai-service:dev
+    ports:
+      - "8001:8001"
+
+volumes:
+  pgdata:
