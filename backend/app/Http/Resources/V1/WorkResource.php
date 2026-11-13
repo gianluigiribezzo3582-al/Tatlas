@@ -10,14 +10,25 @@ use Illuminate\Support\Facades\Storage;
 /** @mixin Work */
 class WorkResource extends JsonResource
 {
+    /**
+     * Local "public" disk: URL built from the current request host, so a phone on the LAN
+     * gets a reachable address. Other disks (R2/S3 in production) use their own URL.
+     */
+    public static function url(string $path): string
+    {
+        $disk = config('filesystems.works_disk', 'public');
+
+        return $disk === 'public'
+            ? url('storage/'.ltrim($path, '/'))
+            : Storage::disk($disk)->url($path);
+    }
+
     public function toArray(Request $request): array
     {
-        $disk = Storage::disk(config('filesystems.works_disk', 'public'));
-
         return [
             'id' => $this->id,
-            'image_url' => $disk->url($this->image_path),
-            'thumbnail_url' => $this->thumbnail_path ? $disk->url($this->thumbnail_path) : $disk->url($this->image_path),
+            'image_url' => self::url($this->image_path),
+            'thumbnail_url' => self::url($this->thumbnail_path ?? $this->image_path),
             'width' => $this->width,
             'height' => $this->height,
             'description' => $this->description,

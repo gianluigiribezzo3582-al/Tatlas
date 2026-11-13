@@ -6,6 +6,8 @@ use App\Models\Artist;
 use App\Models\Studio;
 use App\Models\User;
 use App\Models\Work;
+use App\Services\Geocoding\Geocoder;
+use App\Services\Geocoding\PhotonGeocoder;
 use App\Services\Osm\OverpassClient;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -21,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(OverpassClient::class, fn () => OverpassClient::fromConfig());
+        $this->app->bind(Geocoder::class, fn () => new PhotonGeocoder(
+            url: config('geocoding.photon.url'),
+            perMinute: config('geocoding.photon.per_minute'),
+            userAgent: config('geocoding.photon.user_agent'),
+        ));
     }
 
     /**
