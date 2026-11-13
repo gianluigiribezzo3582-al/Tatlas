@@ -18,15 +18,6 @@ class AsPoint implements CastsAttributes
             return null;
         }
 
-        if (is_string($value) && str_starts_with($value, 'SRID=')) {
-            // Not yet persisted: still in the EWKT form produced by set().
-            if (preg_match('/POINT\(([-\d.]+) ([-\d.]+)\)/', $value, $m) !== 1) {
-                throw new InvalidArgumentException('Invalid EWKT point');
-            }
-
-            return new Point(lat: (float) $m[2], lng: (float) $m[1]);
-        }
-
         return Point::fromWkbHex((string) $value);
     }
 
@@ -40,6 +31,6 @@ class AsPoint implements CastsAttributes
             throw new InvalidArgumentException("{$key} must be a ".Point::class);
         }
 
-        return $value->toEwkt();
+        return $value->toWkbHex();
     }
 }

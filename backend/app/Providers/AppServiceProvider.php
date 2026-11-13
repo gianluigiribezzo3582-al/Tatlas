@@ -6,6 +6,7 @@ use App\Models\Artist;
 use App\Models\Studio;
 use App\Models\User;
 use App\Models\Work;
+use App\Services\Osm\OverpassClient;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(OverpassClient::class, fn () => OverpassClient::fromConfig());
     }
 
     /**

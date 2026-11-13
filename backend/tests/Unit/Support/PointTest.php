@@ -18,3 +18,14 @@ it('parses little-endian EWKB with SRID as returned by PostGIS', function () {
 it('rejects out of range coordinates', function () {
     new Point(lat: 91, lng: 0);
 })->throws(InvalidArgumentException::class);
+
+it('encodes EWKB hex identical to PostGIS output', function () {
+    expect((new Point(lat: 41.1171, lng: 16.8719))->toWkbHex())
+        ->toBe('0101000020E6100000E561A1D634DF3040492EFF21FD8E4440');
+});
+
+it('round trips through EWKB', function () {
+    $point = new Point(lat: -33.8688, lng: 151.2093);
+
+    expect(Point::fromWkbHex($point->toWkbHex()))->toEqual($point);
+});

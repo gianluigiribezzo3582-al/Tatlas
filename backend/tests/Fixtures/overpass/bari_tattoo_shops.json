@@ -1,0 +1,65 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API (fixture, fictional data)",
+  "osm3s": { "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL." },
+  "elements": [
+    {
+      "type": "node",
+      "id": 1000000001,
+      "lat": 41.1225,
+      "lon": 16.8689,
+      "tags": {
+        "shop": "tattoo",
+        "name": "Inchiostro Murattiano",
+        "addr:street": "Via Sparano da Bari",
+        "addr:housenumber": "12",
+        "addr:postcode": "70121",
+        "addr:city": "Bari",
+        "addr:country": "it",
+        "opening_hours": "Tu-Sa 10:00-19:00",
+        "phone": "+39 080 000 0001",
+        "website": "inchiostro-murattiano.example",
+        "contact:instagram": "@inchiostro.murattiano"
+      }
+    },
+    {
+      "type": "way",
+      "id": 2000000002,
+      "center": { "lat": 41.1284, "lon": 16.8701 },
+      "tags": {
+        "shop": "tattoo",
+        "name": "  Bari  Vecchia   Ink ",
+        "addr:city": "Bari",
+        "contact:email": "info@bvink.example",
+        "contact:instagram": "https://www.instagram.com/bv_ink/?hl=it"
+      }
+    },
+    {
+      "type": "node",
+      "id": 1000000003,
+      "lat": 41.0603,
+      "lon": 16.9879,
+      "tags": {
+        "shop": "tattoo",
+        "name": "Ago e China",
+        "addr:city": "Triggiano",
+        "contact:phone": "+39 080 000 0003",
+        "url": "http://agoechina.example/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 1000000004,
+      "lat": 41.11,
+      "lon": 16.88,
+      "tags": { "shop": "tattoo" }
+    },
+    {
+      "type": "node",
+      "id": 1000000005,
+      "lat": 41.1305,
+      "lon": 16.8650,
+      "tags": { "shop": "tattoo", "name": "Inchiostro Murattiano", "addr:city": "Bari" }
+    }
+  ]
+}

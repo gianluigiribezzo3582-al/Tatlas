@@ -29,6 +29,21 @@ final readonly class Point implements JsonSerializable
     }
 
     /**
+     * Hex EWKB, byte-identical to what PostgreSQL returns for geography(Point, 4326),
+     * so Eloquent dirty checks compare equal after a round trip.
+     */
+    public function toWkbHex(): string
+    {
+        $bin = pack('C', 1)                 // little endian
+            .pack('V', 0x20000001)          // Point with SRID flag
+            .pack('V', 4326)
+            .pack('e', $this->lng)
+            .pack('e', $this->lat);
+
+        return strtoupper(bin2hex($bin));
+    }
+
+    /**
      * Parses the hex-encoded (E)WKB that PostgreSQL returns for a geography(Point).
      */
     public static function fromWkbHex(string $hex): self
