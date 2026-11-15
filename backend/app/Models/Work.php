@@ -15,6 +15,11 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 #[Hidden(['image_embedding', 'caption_embedding'])]
 class Work extends Model
 {
+    public const BODY_PARTS = [
+        'arm', 'forearm', 'hand', 'shoulder', 'chest', 'back', 'ribs', 'stomach',
+        'neck', 'head', 'leg', 'thigh', 'calf', 'foot', 'hip', 'other',
+    ];
+
     protected function casts(): array
     {
         return [

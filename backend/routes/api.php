@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\ClaimController;
 use App\Http\Controllers\Api\V1\ManageStudioController;
 use App\Http\Controllers\Api\V1\MyArtistController;
 use App\Http\Controllers\Api\V1\MyPresenceController;
+use App\Http\Controllers\Api\V1\MyWorkController;
 use App\Http\Controllers\Api\V1\RemovalRequestController;
 use App\Http\Controllers\Api\V1\StudioController;
 use App\Http\Controllers\Api\V1\StyleController;
@@ -37,6 +38,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
         Route::post('me/presences', [MyPresenceController::class, 'store'])->name('me.presences.store');
         Route::delete('me/presences/{presence}', [MyPresenceController::class, 'destroy'])->name('me.presences.destroy');
+
+        Route::get('me/works', [MyWorkController::class, 'index'])->name('me.works.index');
+        Route::post('me/works', [MyWorkController::class, 'store'])->middleware('throttle:uploads')->name('me.works.store');
+        Route::patch('me/works/{work}', [MyWorkController::class, 'update'])->name('me.works.update');
+        Route::delete('me/works/{work}', [MyWorkController::class, 'destroy'])->name('me.works.destroy');
 
         Route::get('me/claims', [ClaimController::class, 'index'])->name('me.claims.index');
         Route::post('studios/{studio}/claim', [ClaimController::class, 'storeForStudio'])->whereNumber('studio')->name('studios.claim');
