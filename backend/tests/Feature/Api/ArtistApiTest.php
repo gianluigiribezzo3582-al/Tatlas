@@ -49,7 +49,7 @@ it('shows an artist by slug with styles, works and current studios', function ()
     $artist = Artist::factory()->create(['slug' => 'mara-ink', 'name' => 'Mara']);
     $artist->styles()->attach(Style::where('slug', 'watercolor')->value('id'), ['weight' => 0.8]);
     $artist->studios()->attach($studio, ['type' => 'resident']);
-    Work::create(['artist_id' => $artist->id, 'image_path' => 'works/1.jpg', 'position' => 0]);
+    $work = Work::create(['artist_id' => $artist->id, 'image_path' => 'works/1.jpg', 'position' => 0]);
 
     $this->getJson('/api/v1/artists/mara-ink')
         ->assertOk()
@@ -58,7 +58,7 @@ it('shows an artist by slug with styles, works and current studios', function ()
         ->assertJsonPath('data.styles.0.weight', 0.8)
         ->assertJsonPath('data.studios.0.name', 'Home')
         ->assertJsonPath('data.studios.0.presence.type', 'resident')
-        ->assertJsonPath('data.works.0.id', 1)
+        ->assertJsonPath('data.works.0.id', $work->id)
         ->assertJsonPath('data.public_url', 'https://tatlas.app/artisti/mara-ink')
         ->assertJsonMissingPath('data.text_embedding');
 });

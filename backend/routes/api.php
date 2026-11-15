@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AccountController;
 use App\Http\Controllers\Api\V1\ArtistController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ClaimController;
@@ -31,6 +32,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
         Route::get('me', [AuthController::class, 'me'])->name('me');
+        Route::get('me/export', [AccountController::class, 'export'])->name('me.export');
+        Route::delete('me', [AccountController::class, 'destroy'])->middleware('throttle:auth')->name('me.destroy');
 
         Route::get('me/artist', [MyArtistController::class, 'show'])->name('me.artist.show');
         Route::post('me/artist', [MyArtistController::class, 'store'])->name('me.artist.store');
