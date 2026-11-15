@@ -36,6 +36,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('me/artist', [MyArtistController::class, 'store'])->name('me.artist.store');
         Route::patch('me/artist', [MyArtistController::class, 'update'])->name('me.artist.update');
 
+        Route::get('me/presences', [MyPresenceController::class, 'index'])->name('me.presences.index');
         Route::post('me/presences', [MyPresenceController::class, 'store'])->name('me.presences.store');
         Route::delete('me/presences/{presence}', [MyPresenceController::class, 'destroy'])->name('me.presences.destroy');
 

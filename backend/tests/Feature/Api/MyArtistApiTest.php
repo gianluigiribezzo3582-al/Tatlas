@@ -82,6 +82,9 @@ it('manages resident studios and guest spots', function () {
     expect($response->json('data'))->toHaveCount(2);
     $guestId = collect($response->json('data'))->firstWhere('type', 'guest')['presence_id'];
 
+    $this->getJson('/api/v1/me/presences')->assertOk()->assertJsonPath('data.0.type', 'resident')
+        ->assertJsonPath('data.1.starts_at', '2026-12-10');
+
     $this->deleteJson("/api/v1/me/presences/{$guestId}")->assertOk()->assertJsonCount(1, 'data');
 });
 

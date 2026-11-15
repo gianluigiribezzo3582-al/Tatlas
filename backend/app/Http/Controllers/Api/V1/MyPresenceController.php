@@ -15,6 +15,13 @@ use Illuminate\Validation\Rule;
  */
 class MyPresenceController extends Controller
 {
+    public function index(Request $request): JsonResponse
+    {
+        abort_if($request->user()->artistProfile() === null, 409, 'Create your artist profile first.');
+
+        return response()->json(['data' => $this->presences($request)]);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $artist = $request->user()->artistProfile();
@@ -55,12 +62,13 @@ class MyPresenceController extends Controller
     /** @return list<array<string, mixed>> */
     private function presences(Request $request): array
     {
-        return $request->user()->artistProfile()->studios()->get()->map(fn (Studio $s) => [
-            'presence_id' => $s->pivot->id,
-            'studio' => ['id' => $s->id, 'name' => $s->name, 'city' => $s->city],
-            'type' => $s->pivot->type->value,
-            'starts_at' => $s->pivot->starts_at?->toDateString(),
-            'ends_at' => $s->pivot->ends_at?->toDateString(),
-        ])->values()->all();
+        return $request->user()->artistProfile()->studios()
+            ->orderBy('artist_studio.type', 'desc')->orderBy('artist_studio.starts_at')->get()->map(fn (Studio $s) => [
+                'presence_id' => $s->pivot->id,
+                'studio' => ['id' => $s->id, 'name' => $s->name, 'city' => $s->city],
+                'type' => $s->pivot->type->value,
+                'starts_at' => $s->pivot->starts_at?->toDateString(),
+                'ends_at' => $s->pivot->ends_at?->toDateString(),
+            ])->values()->all();
     }
 }
