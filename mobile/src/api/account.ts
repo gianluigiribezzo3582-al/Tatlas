@@ -106,3 +106,7 @@ export const createStudio = (input: {
 }) => apiSend<Item<StudioSummary>>('POST', 'studios', input);
 
 export const deleteAccount = (password: string) => apiSend<void>('DELETE', 'me', { password });
+
+export const forgotPassword = (email: string) =>
+  apiSend<{ message: string }>('POST', 'auth/forgot-password', { email });
+export const resendVerification = () => apiSend<{ message: string }>('POST', 'auth/email/resend');

@@ -50,6 +50,11 @@ export default function LoginScreen() {
       />
       <Button label={t('account.login')} onPress={submit} busy={busy} testID="login-submit" />
       <Button
+        label={t('account.forgotTitle')}
+        variant="secondary"
+        onPress={() => router.push('/account/forgot')}
+      />
+      <Button
         label={t('account.noAccount')}
         variant="secondary"
         onPress={() => router.replace('/account/register')}

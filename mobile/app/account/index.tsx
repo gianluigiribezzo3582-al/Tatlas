@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { getMyArtist } from '@/api/account';
+import { getMyArtist, resendVerification } from '@/api/account';
 import { useAuth } from '@/auth/AuthProvider';
 import { Button, Notice } from '@/components/Form';
 import { FormScreen } from '@/components/Screen';
@@ -65,6 +66,8 @@ export default function AccountScreen() {
         <Text style={styles.meta}>{user.email}</Text>
       </View>
 
+      {!user.email_verified && <VerifyEmailNotice />}
+
       {artist.isLoading ? (
         <StateMessage loading />
       ) : profile ? (
@@ -110,6 +113,40 @@ export default function AccountScreen() {
       />
       <MenuItem label={t('account.deleteTitle')} onPress={() => router.push('/account/delete')} />
     </FormScreen>
+  );
+}
+
+function VerifyEmailNotice() {
+  const { t } = useTranslation();
+  const { refresh } = useAuth();
+  const [state, setState] = useState<'idle' | 'busy' | 'sent'>('idle');
+
+  return (
+    <View style={{ gap: spacing.sm }}>
+      <Notice>{state === 'sent' ? t('account.verifySent') : t('account.verifyPending')}</Notice>
+      <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+        <View style={{ flex: 1 }}>
+          <Button
+            label={t('account.verifyResend')}
+            variant="secondary"
+            busy={state === 'busy'}
+            disabled={state === 'sent'}
+            onPress={async () => {
+              setState('busy');
+              try {
+                await resendVerification();
+                setState('sent');
+              } catch {
+                setState('idle');
+              }
+            }}
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Button label={t('account.verifyDone')} variant="secondary" onPress={refresh} />
+        </View>
+      </View>
+    </View>
   );
 }
 

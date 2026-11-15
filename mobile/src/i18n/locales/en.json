@@ -133,7 +133,15 @@
     "privacyLink": "Read the privacy notice",
     "deleteTitle": "Delete account",
     "deleteWarning": "Your account, artist profile, portfolio photos and studio links will be permanently deleted. Studios you manage will lose their owner. This cannot be undone.",
-    "deleteConfirm": "Delete permanently"
+    "deleteConfirm": "Delete permanently",
+    "forgotTitle": "Forgot your password?",
+    "forgotIntro": "Enter your account email: we'll send you a link to choose a new one.",
+    "forgotSend": "Send the link",
+    "forgotSent": "If an account exists for this email you'll receive a link shortly. Check your spam folder too.",
+    "verifyPending": "✉️ Please confirm your email: we sent you a link when you signed up.",
+    "verifySent": "Confirmation email sent again. Open the link, then tap “I've confirmed”.",
+    "verifyResend": "Send again",
+    "verifyDone": "I've confirmed"
   },
   "claim": {
     "title": "Claim this studio",

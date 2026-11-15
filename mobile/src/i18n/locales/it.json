@@ -133,7 +133,15 @@
     "privacyLink": "Leggi l'informativa privacy",
     "deleteTitle": "Elimina account",
     "deleteWarning": "Verranno cancellati definitivamente account, profilo artista, foto del portfolio e collegamenti agli studi. Gli studi che gestisci resteranno senza titolare. Non si può annullare.",
-    "deleteConfirm": "Elimina definitivamente"
+    "deleteConfirm": "Elimina definitivamente",
+    "forgotTitle": "Password dimenticata?",
+    "forgotIntro": "Inserisci l'email del tuo account: ti invieremo un link per sceglierne una nuova.",
+    "forgotSend": "Invia il link",
+    "forgotSent": "Se esiste un account con questa email, riceverai a breve un messaggio con il link. Controlla anche lo spam.",
+    "verifyPending": "✉️ Conferma la tua email: ti abbiamo inviato un link al momento della registrazione.",
+    "verifySent": "Email di conferma inviata di nuovo. Apri il link, poi tocca «Ho confermato».",
+    "verifyResend": "Invia di nuovo",
+    "verifyDone": "Ho confermato"
   },
   "claim": {
     "title": "Rivendica lo studio",
