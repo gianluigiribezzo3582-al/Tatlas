@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
     'name', 'slug', 'location', 'street', 'housenumber', 'postcode', 'city', 'country_code',
     'opening_hours', 'phone', 'email', 'website', 'instagram_url',
     'source', 'osm_type', 'osm_id', 'osm_tags', 'osm_synced_at', 'osm_missing_since', 'locked_fields',
+    'created_by_user_id',
 ])]
 class Studio extends Model
 {
@@ -59,6 +61,12 @@ class Studio extends Model
     public function scopeVisible(Builder $query): void
     {
         $query->whereNull($query->qualifyColumn('hidden_at'));
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'claimed_by_user_id');
     }
 
     public function isLocked(string $field): bool

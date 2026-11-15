@@ -20,6 +20,9 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
+    /** Mirrors the DB default so fresh instances have a role. */
+    protected $attributes = ['role' => 'user'];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -38,6 +41,12 @@ class User extends Authenticatable
     public function artist(): HasOne
     {
         return $this->hasOne(Artist::class, 'claimed_by_user_id');
+    }
+
+    /** Always queried fresh (the relation may be cached on long-lived instances). */
+    public function artistProfile(): ?Artist
+    {
+        return $this->artist()->first();
     }
 
     public function isAdmin(): bool

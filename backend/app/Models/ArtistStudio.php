@@ -11,6 +11,11 @@ class ArtistStudio extends Pivot
 
     protected $table = 'artist_studio';
 
+    public function getRouteKeyName(): string
+    {
+        return 'id';
+    }
+
     protected function casts(): array
     {
         return [

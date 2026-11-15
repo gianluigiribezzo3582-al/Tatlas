@@ -22,7 +22,7 @@ class ArtistController extends Controller
 
     public function show(Artist $artist): ArtistResource
     {
-        abort_if($artist->hidden_at !== null, 404);
+        abort_unless($artist->isPubliclyVisible(), 404);
 
         $artist->load([
             'styles',

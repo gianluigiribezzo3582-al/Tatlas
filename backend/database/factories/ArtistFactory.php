@@ -21,6 +21,13 @@ class ArtistFactory extends Factory
             'bio' => fake()->sentence(12),
             'languages' => ['it'],
             'accepts_walk_in' => fake()->boolean(),
+            'is_verified' => true,
+            'verified_at' => now(),
         ];
+    }
+
+    public function unverified(): static
+    {
+        return $this->state(fn () => ['is_verified' => false, 'verified_at' => null]);
     }
 }

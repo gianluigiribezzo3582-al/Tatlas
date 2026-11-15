@@ -67,10 +67,29 @@ class Artist extends Model
         return $this->morphToMany(Tag::class, 'taggable');
     }
 
-    /** @param Builder<Artist> $query */
+    /**
+     * Publicly listable: not hidden and, if required, verified by an admin.
+     *
+     * @param  Builder<Artist>  $query
+     */
     public function scopeVisible(Builder $query): void
     {
         $query->whereNull($query->qualifyColumn('hidden_at'));
+        if (config('tatlas.require_artist_verification')) {
+            $query->where($query->qualifyColumn('is_verified'), true);
+        }
+    }
+
+    public function isPubliclyVisible(): bool
+    {
+        return $this->hidden_at === null
+            && ($this->is_verified || ! config('tatlas.require_artist_verification'));
+    }
+
+    /** @return HasMany<ClaimRequest, $this> */
+    public function claims(): HasMany
+    {
+        return $this->hasMany(ClaimRequest::class, 'claimable_id')->where('claimable_type', 'artist');
     }
 
     public function getRouteKeyName(): string

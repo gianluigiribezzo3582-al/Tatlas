@@ -66,6 +66,7 @@ class DemoData extends Command
                 'price_range' => fake()->numberBetween(1, 3),
                 'instagram_url' => null,
             ]);
+            $artist->forceFill(['is_verified' => true, 'verified_at' => now()])->save();
 
             $artist->styles()->attach(
                 collect(fake()->randomElements($styles, fake()->numberBetween(1, 3)))
