@@ -97,12 +97,18 @@ docker compose exec app php artisan tatlas:make-admin tuo@email.it --password=un
 | 23 | Rivendica uno studio | Scheda di uno studio OSM → "Rivendica questo studio" → messaggio e link di prova | Nel pannello admin, scheda "Rivendicazioni": **Approva** ti assegna lo studio; **Rifiuta** richiede un motivo |
 | 24 | Rimozione GDPR | Per ora solo via API: `POST /api/v1/removal-requests` | Nel pannello admin, scheda "Richieste di rimozione": **Nascondi contenuto** lo toglie da mappa e API |
 | 25 | Logout | Account → Esci | Il token viene revocato sul server e cancellato dal telefono |
+| 26 | Conferma email | Dopo la registrazione apri <http://localhost:8025> sul PC (Mailpit) e la mail «Conferma la tua email» → link | Pagina «Email confermata ✓». Nell'app tocca «Ho confermato» e l'avviso sparisce |
+| 27 | Password dimenticata | Accedi → «Password dimenticata?» → email → apri la mail in Mailpit → nuova password | Tutte le sessioni vengono chiuse; accedi di nuovo con la nuova password |
+| 28 | Pagina web artista | Sul PC apri `http://localhost:8000/artisti/<slug>` (lo slug è nella scheda artista, pulsante Condividi) | Pagina con stili, portfolio, studi, mappa e pulsante «Apri nell'app» |
+| 29 | Segnala / rimozione | Scheda studio o artista → «Segnala un errore o chiedi la rimozione» | Si apre il modulo web già compilato con il contenuto; la richiesta arriva nel pannello admin |
+| 30 | Elimina account | Account → Elimina account → password | Account, profilo e foto vengono cancellati; l'app torna alla mappa |
+
+> **Link nelle email dal telefono:** i link usano `APP_URL`. Per aprirli dal telefono imposta in `backend/.env` `APP_URL=http://<IP-del-PC>:8000` e riavvia con `docker compose restart app worker`.
 
 ## Non ancora disponibile in questa build
 
 - Modifica dei dati di uno studio rivendicato dall'app (l'API `PATCH /studios/{id}` è pronta).
-- Modulo per la richiesta di rimozione GDPR nell'app e sul web (l'API è pronta).
-- Verifica dell'email e recupero password.
+- Apertura automatica dei link `https://tatlas.app/...` nell'app: richiede il dominio reale e l'impronta della chiave di firma (vedi ADR-026).
 - Pagina web pubblica dell'artista e link che aprono l'app (App Links): E2.
 - Ricerca intelligente "descrivi il tatuaggio": Fase 2.
 

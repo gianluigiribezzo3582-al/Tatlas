@@ -117,6 +117,17 @@ I tag OSM grezzi restano in `osm_tags` (jsonb), utili per futuri mapping senza d
 ## ADR-025 · Token nel secure store del sistema operativo
 **Decisione:** il token Sanctum si salva con `expo-secure-store` (Keystore su Android, Keychain su iOS), mai in AsyncStorage. Il logout revoca il token anche sul server.
 
+## ADR-026 · Pagine web pubbliche servite da Laravel, stessi percorsi dell'app
+**Data:** 2026-11-15
+**Decisione:** `/artisti/{slug}` e `/studi/{id}-{slug}` sono pagine Blade server-side, senza JavaScript tranne la mappa (MapLibre GL JS 4.7.1 da unpkg, stessa sorgente di tile dell'app). Includono canonical, Open Graph e JSON-LD (`Person` con `worksFor`, `TattooParlor` con `geo` e `openingHours`: la sintassi OSM coincide con quella di schema.org per i casi comuni). Lo slug dello studio può cambiare, quindi l'URL contiene l'id e un redirect 301 porta alla forma canonica. Profili non verificati o nascosti danno 404; i profili `demo-*` sono `noindex` ed esclusi dalla sitemap. L'app dichiara gli stessi percorsi come Android App Links (`autoVerify`) e iOS associated domains.
+**Da fare al lancio:** dominio reale in `TATLAS_PUBLIC_URL` / `EXPO_PUBLIC_WEB_URL` e impronta SHA-256 della chiave di firma in `TATLAS_ANDROID_CERT_SHA256`. Finché non c'è, `assetlinks.json` restituisce `[]` e Android apre i link nel browser.
+
+## ADR-027 · GDPR: esportazione, cancellazione, rimozione senza account
+**Decisione:** `GET /me/export` restituisce in JSON tutti i dati dell'utente. `DELETE /me` (con conferma della password) cancella account, profilo, foto dal disco, presenze, rivendicazioni e token; gli studi gestiti restano ma senza titolare, perché sono attività commerciali spesso provenienti da OSM. Il modulo web `/rimozione` non richiede account, ha un campo honeypot ed è precompilato dai link «Segnala» dell'app e del sito. L'informativa `/privacy` è una **bozza** da far rivedere a un consulente prima degli store: titolare ed email arrivano da `TATLAS_PRIVACY_*`.
+
+## ADR-028 · Email transazionali in italiano, link verso pagine web
+**Decisione:** verifica email (link firmato, valido 60 minuti) e reset password puntano a pagine web del backend, non a deep link: funzionano da qualsiasi client di posta, anche senza l'app installata. Il reset revoca tutti i token Sanctum. La verifica email non blocca le funzioni: è un segnale in più per l'admin. In sviluppo le email finiscono in Mailpit.
+
 ---
 
 ## Roadmap Fase 1
@@ -131,8 +142,10 @@ I tag OSM grezzi restano in `osm_tags` (jsonb), utili per futuri mapping senza d
 | C1–C4 API v1 (bbox/raggio, dettaglio, filtri, auth) | ✅ |
 | D1–D4 Mappa nell'app | ✅ |
 | E1 Schermate studio e artista | ✅ |
-| E2 Pagina web pubblica artista + App Links | ⏳ |
+| E2 Pagina web pubblica artista + App Links | ✅ |
 | F1–F4 Claim, admin, portfolio, stili e guest spot | ✅ |
 | Modalità demo offline nell'app | ✅ |
 | G0 APK di test via GitHub Actions | ✅ |
-| G1–G2 Build EAS, privacy/GDPR | ⏳ |
+| G2 Privacy, rimozione, export e cancellazione account | ✅ |
+| Recupero password e verifica email | ✅ |
+| G1 Build EAS per gli store | ⏳ |

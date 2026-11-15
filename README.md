@@ -57,6 +57,8 @@ docker compose exec app php artisan tatlas:demo-data
 | POST · PATCH | `/api/v1/studios` · `/api/v1/studios/{id}` | Crea uno studio (geocodificato o con `lat`/`lng`) · modifica (solo titolare o admin) |
 | POST · GET | `/api/v1/studios/{id}/claim` · `/api/v1/me/claims` | Rivendicazione di uno studio |
 | POST | `/api/v1/removal-requests` | Richiesta di rimozione GDPR, senza account |
+| POST | `/api/v1/auth/forgot-password` · `/api/v1/auth/email/resend` | Link di reset password (risposta identica anche se l'email non esiste) · nuovo invio della verifica email |
+| GET · DELETE | `/api/v1/me/export` · `/api/v1/me` | Esportazione dei dati (GDPR) · cancellazione dell'account (richiede `password`) |
 
 ## Pannello admin
 
@@ -70,6 +72,8 @@ Servizi:
 
 - API: http://localhost:8000 (healthcheck: `/up`)
 - AI service: http://localhost:8001/health
+- Email di sviluppo (Mailpit): http://localhost:8025, dove arrivano tutte le email inviate (conferma account, reset password)
+- Pagine pubbliche: `http://localhost:8000/artisti/<slug>`, `/studi/<id>-<slug>`, `/privacy`, `/rimozione`, `/sitemap.xml`
 - PostgreSQL: `localhost:5432`, db `tatlas` (+ `tatlas_test` per i test), utente `tatlas` / `secret`
 
 ### Import da OpenStreetMap
