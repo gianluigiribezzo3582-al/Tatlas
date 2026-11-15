@@ -13,10 +13,11 @@ import {
   View,
 } from 'react-native';
 
-import { fetchArtist } from '@/api/endpoints';
+import { fetchArtist } from '@/api/source';
 import { Chip } from '@/components/Chip';
 import { LinkButton, Section } from '@/components/Section';
 import { StateMessage } from '@/components/StateMessage';
+import { imageSource } from '@/demo/images';
 import { formatAddress, formatPresenceDates, priceLabel } from '@/lib/format';
 import { colors, spacing } from '@/theme';
 
@@ -80,7 +81,7 @@ export default function ArtistScreen() {
               {artist.works.map((w) => (
                 <Image
                   key={w.id}
-                  source={{ uri: w.thumbnail_url }}
+                  source={imageSource(w.thumbnail_url)}
                   style={{
                     width: tile,
                     height: tile,

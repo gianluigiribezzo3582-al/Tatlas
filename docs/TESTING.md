@@ -1,8 +1,16 @@
 # Provare Tatlas sul telefono
 
-Guida per installare l'APK di test su un telefono Android e collegarlo al backend che gira sul tuo PC.
+Guida per installare l'APK di test su un telefono Android.
 
-## 1. Avvia il backend sul PC
+## 0. Senza PC: modalità demo
+
+L'APK di test **parte in modalità demo**: studi, artisti, guest spot e immagini sono **fittizi** e inclusi nell'app, quindi non serve nessun server. Basta installare l'APK (passo 3) e aprirlo. In alto compare il badge viola «MODALITÀ DEMO · dati fittizi».
+
+Puoi provare tutte le funzioni della tabella al passo 5. Gli studi demo sono sparsi tra Bari, Molfetta, Monopoli, Altamura e altri comuni: allontana lo zoom per vederli tutti. Le date dei guest spot si calcolano rispetto al giorno in cui apri l'app, quindi ci sono sempre guest "in arrivo".
+
+Per usare i dati veri del backend: **⚙︎ → disattiva "Modalità demo"** e imposta il server (passi 1–4). Se il collegamento al server va a buon fine, la modalità demo si spegne da sola. Puoi riattivarla in ogni momento dalle Impostazioni, oppure dal pulsante «Usa la modalità demo» che compare quando il server non risponde.
+
+## 1. Con il PC: avvia il backend
 
 ```bash
 cp backend/.env.example backend/.env

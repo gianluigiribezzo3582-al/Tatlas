@@ -1,0 +1,123 @@
+[
+  {
+    "slug": "fine-line",
+    "name_it": "Fine line",
+    "name_en": "Fine line",
+    "children": []
+  },
+  {
+    "slug": "blackwork",
+    "name_it": "Blackwork",
+    "name_en": "Blackwork",
+    "children": [
+      {
+        "slug": "dotwork",
+        "name_it": "Dotwork",
+        "name_en": "Dotwork"
+      },
+      {
+        "slug": "geometric",
+        "name_it": "Geometrico",
+        "name_en": "Geometric"
+      },
+      {
+        "slug": "ornamental",
+        "name_it": "Ornamentale",
+        "name_en": "Ornamental"
+      },
+      {
+        "slug": "tribal",
+        "name_it": "Tribale",
+        "name_en": "Tribal"
+      }
+    ]
+  },
+  {
+    "slug": "realism",
+    "name_it": "Realistico",
+    "name_en": "Realism",
+    "children": [
+      {
+        "slug": "micro-realism",
+        "name_it": "Micro realismo",
+        "name_en": "Micro realism"
+      },
+      {
+        "slug": "portrait",
+        "name_it": "Ritratto",
+        "name_en": "Portrait"
+      }
+    ]
+  },
+  {
+    "slug": "black-and-grey",
+    "name_it": "Black & grey",
+    "name_en": "Black & grey",
+    "children": [
+      {
+        "slug": "chicano",
+        "name_it": "Chicano",
+        "name_en": "Chicano"
+      }
+    ]
+  },
+  {
+    "slug": "traditional",
+    "name_it": "Tradizionale",
+    "name_en": "Traditional",
+    "children": [
+      {
+        "slug": "old-school",
+        "name_it": "Old school",
+        "name_en": "Old school"
+      },
+      {
+        "slug": "neo-traditional",
+        "name_it": "Neo traditional",
+        "name_en": "Neo traditional"
+      }
+    ]
+  },
+  {
+    "slug": "japanese",
+    "name_it": "Giapponese",
+    "name_en": "Japanese",
+    "children": []
+  },
+  {
+    "slug": "new-school",
+    "name_it": "New school",
+    "name_en": "New school",
+    "children": []
+  },
+  {
+    "slug": "illustrative",
+    "name_it": "Illustrativo",
+    "name_en": "Illustrative",
+    "children": []
+  },
+  {
+    "slug": "watercolor",
+    "name_it": "Acquerello",
+    "name_en": "Watercolor",
+    "children": []
+  },
+  {
+    "slug": "lettering",
+    "name_it": "Lettering",
+    "name_en": "Lettering",
+    "children": []
+  },
+  {
+    "slug": "trash-polka",
+    "name_it": "Trash polka",
+    "name_en": "Trash polka",
+    "children": []
+  },
+  {
+    "slug": "cover-up",
+    "name_it": "Cover-up",
+    "name_en": "Cover-up",
+    "children": []
+  }
+]

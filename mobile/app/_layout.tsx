@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { StateMessage } from '@/components/StateMessage';
+import { loadDemoMode } from '@/config/mode';
 import { loadApiUrl } from '@/config/server';
 import { createQueryClient } from '@/lib/queryClient';
 import { colors } from '@/theme';
@@ -18,7 +19,7 @@ export default function RootLayout() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    loadApiUrl().finally(() => setReady(true));
+    Promise.all([loadApiUrl(), loadDemoMode()]).finally(() => setReady(true));
   }, []);
 
   return (

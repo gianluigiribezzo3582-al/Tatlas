@@ -1,5 +1,8 @@
 {
-  "app": { "name": "Tatlas", "tagline": "Trova il tatuatore giusto vicino a te" },
+  "app": {
+    "name": "Tatlas",
+    "tagline": "Trova il tatuatore giusto vicino a te"
+  },
   "common": {
     "loading": "Caricamento…",
     "loadError": "Impossibile caricare i dati.",
@@ -14,7 +17,9 @@
     "errorHint": "Controlla che il backend sia avviato e che l'indirizzo del server nelle Impostazioni sia corretto.",
     "attribution": "Dati © OpenStreetMap contributors (ODbL)"
   },
-  "filters": { "guestUpcoming": "Guest spot in arrivo" },
+  "filters": {
+    "guestUpcoming": "Guest spot in arrivo"
+  },
   "location": {
     "ask": "📍 Mostra gli studi vicino a te: tocca per usare la tua posizione (solo mentre usi l'app).",
     "openSettings": "📍 Posizione disattivata per Tatlas. Tocca per aprire le impostazioni.",
@@ -58,5 +63,12 @@
     "unreachable": "Salvato, ma il server non risponde. Controlla IP, porta e che telefono e PC siano sulla stessa rete.",
     "about": "Informazioni",
     "osmLicense": "Licenza dei dati OpenStreetMap"
+  },
+  "demo": {
+    "title": "Modalità demo",
+    "hint": "Usa dati fittizi inclusi nell'app, senza server. Studi, artisti e immagini sono inventati.",
+    "badge": "MODALITÀ DEMO · dati fittizi",
+    "offer": "Vuoi provare l'app senza server?",
+    "start": "Usa la modalità demo"
   }
 }

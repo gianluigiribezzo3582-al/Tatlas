@@ -3,7 +3,7 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { fetchStudio } from '@/api/endpoints';
+import { fetchStudio } from '@/api/source';
 import { Chip } from '@/components/Chip';
 import { LinkButton, Section } from '@/components/Section';
 import { StateMessage } from '@/components/StateMessage';

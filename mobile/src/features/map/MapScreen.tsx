@@ -7,18 +7,20 @@ import {
   Map,
   NativeUserLocation,
 } from '@maplibre/maplibre-react-native';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { type Bounds, fetchStudios, fetchStyles, roundBounds } from '@/api/endpoints';
+import { type Bounds, roundBounds } from '@/api/endpoints';
+import { fetchStudios, fetchStyles } from '@/api/source';
 import { BottomSheet } from '@/components/BottomSheet';
 import { Chip } from '@/components/Chip';
 import { StateMessage } from '@/components/StateMessage';
 import { StudioRow } from '@/components/StudioRow';
+import { isDemoMode, setDemoMode } from '@/config/mode';
 import { useUserLocation } from '@/features/location/useUserLocation';
 import { useDebounced } from '@/lib/useDebounced';
 import { DEFAULT_CENTER, DEFAULT_ZOOM, tileSource } from '@/map/tiles';
@@ -33,6 +35,14 @@ export function MapScreen() {
   const source = useRef<GeoJSONSourceRef>(null);
   const location = useUserLocation();
   const centeredOnUser = useRef(false);
+  const queryClient = useQueryClient();
+  const demo = isDemoMode();
+
+  const startDemo = async () => {
+    await setDemoMode(true);
+    queryClient.clear();
+    await queryClient.refetchQueries();
+  };
 
   const [bounds, setBounds] = useState<Bounds | null>(null);
   const [style, setStyle] = useState<string | null>(null);
@@ -196,6 +206,16 @@ export function MapScreen() {
             />
           ))}
         </ScrollView>
+        {demo && (
+          <Pressable
+            onPress={() => router.push('/settings')}
+            style={styles.demoBadge}
+            accessibilityRole="button"
+            testID="demo-badge"
+          >
+            <Text style={styles.demoText}>{t('demo.badge')}</Text>
+          </Pressable>
+        )}
         {location.status === 'undetermined' || location.status === 'denied' ? (
           <Pressable onPress={location.request} style={styles.banner} accessibilityRole="button">
             <Text style={styles.bannerText}>
@@ -229,11 +249,18 @@ export function MapScreen() {
         }
       >
         {studios.isError ? (
-          <StateMessage
-            message={t('map.errorHint')}
-            actionLabel={t('settings.title')}
-            onAction={() => router.push('/settings')}
-          />
+          <View>
+            <StateMessage
+              message={t('map.errorHint')}
+              actionLabel={t('settings.title')}
+              onAction={() => router.push('/settings')}
+            />
+            <StateMessage
+              message={t('demo.offer')}
+              actionLabel={t('demo.start')}
+              onAction={startDemo}
+            />
+          </View>
         ) : (
           <FlatList
             data={ordered}
@@ -296,6 +323,15 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   bannerText: { color: colors.paper, fontSize: 14 },
+  demoBadge: {
+    alignSelf: 'flex-start',
+    marginHorizontal: spacing.lg,
+    backgroundColor: colors.guest,
+    borderRadius: 8,
+    paddingHorizontal: spacing.md,
+    paddingVertical: 6,
+  },
+  demoText: { color: colors.paper, fontSize: 12, fontWeight: '700' },
   fab: {
     position: 'absolute',
     right: spacing.lg,

@@ -3,10 +3,20 @@ import Constants from 'expo-constants';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Linking,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
 import { Section } from '@/components/Section';
 import { env } from '@/config/env';
+import { isDemoMode, setDemoMode } from '@/config/mode';
 import { getApiUrl, normalizeApiUrl, saveApiUrl } from '@/config/server';
 import { tileSource } from '@/map/tiles';
 import { colors, spacing } from '@/theme';
@@ -16,6 +26,13 @@ export default function SettingsScreen() {
   const queryClient = useQueryClient();
   const [value, setValue] = useState(getApiUrl());
   const [status, setStatus] = useState<{ ok: boolean; text: string } | null>(null);
+  const [demo, setDemo] = useState(isDemoMode());
+
+  const toggleDemo = async (on: boolean) => {
+    setDemo(on);
+    await setDemoMode(on);
+    queryClient.clear();
+  };
 
   const test = async (url: string) => {
     try {
@@ -35,6 +52,7 @@ export default function SettingsScreen() {
     setValue(url);
     const ok = await test(url);
     await saveApiUrl(url);
+    if (ok && demo) await toggleDemo(false);
     await queryClient.invalidateQueries();
     setStatus({ ok, text: ok ? t('settings.connected') : t('settings.unreachable') });
   };
@@ -50,6 +68,13 @@ export default function SettingsScreen() {
     <>
       <Stack.Screen options={{ title: t('settings.title') }} />
       <ScrollView style={styles.page} keyboardShouldPersistTaps="handled">
+        <Section title={t('demo.title')}>
+          <View style={styles.switchRow}>
+            <Text style={[styles.meta, { flex: 1 }]}>{t('demo.hint')}</Text>
+            <Switch value={demo} onValueChange={toggleDemo} testID="demo-switch" />
+          </View>
+        </Section>
+
         <Section title={t('settings.server')}>
           <Text style={styles.meta}>{t('settings.serverHint')}</Text>
           <TextInput
@@ -108,6 +133,7 @@ const styles = StyleSheet.create({
     color: colors.ink,
   },
   row: { flexDirection: 'row', gap: spacing.sm },
+  switchRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   primary: {
     backgroundColor: colors.ink,
     borderRadius: 8,

@@ -95,6 +95,12 @@ I tag OSM grezzi restano in `osm_tags` (jsonb), utili per futuri mapping senza d
 ## ADR-020 · Tile della mappa: OpenFreeMap "positron" dietro `TileSource`
 **Decisione:** `mobile/src/map/tiles.ts` definisce sorgente, URL dello stile e attribuzione. Per ora si usa lo stile positron di OpenFreeMap, chiaro e poco invasivo sotto i marker. Il passaggio a Protomaps si fa modificando solo questo file. Il riquadro di attribuzione nativo di MapLibre resta attivo e la lista riporta anche «Dati © OpenStreetMap contributors (ODbL)».
 
+## ADR-021 · Modalità demo offline nell'app
+**Data:** 2026-11-15
+**Decisione:** l'app include un dataset fittizio deterministico (14 studi in comuni reali del barese con nomi inventati, 32 artisti `demo-*`, 8 immagini astratte) e un'implementazione locale delle stesse chiamate API: filtro per area, distanza, stile con sotto-stili, guest spot. Le schermate passano da `src/api/source.ts`, che sceglie tra API reale e demo. La modalità si attiva da Impostazioni o dalla schermata di errore. Gli APK di test partono in demo (`EXPO_PUBLIC_DEMO_DEFAULT=1`) finché non si configura un server raggiungibile.
+**Perché:** permette di provare e mostrare l'app solo con il telefono. La tassonomia degli stili è esportata dal seeder del backend (`src/demo/styles.json`), così non può divergere.
+**Conseguenze:** ogni nuova chiamata API usata dalle schermate va aggiunta anche alla sorgente demo, oppure disabilitata in demo (per esempio login e upload).
+
 ---
 
 ## Roadmap Fase 1

@@ -1,5 +1,8 @@
 {
-  "app": { "name": "Tatlas", "tagline": "Find the right tattoo artist near you" },
+  "app": {
+    "name": "Tatlas",
+    "tagline": "Find the right tattoo artist near you"
+  },
   "common": {
     "loading": "Loading…",
     "loadError": "Could not load data.",
@@ -14,7 +17,9 @@
     "errorHint": "Check that the backend is running and that the server address in Settings is correct.",
     "attribution": "Data © OpenStreetMap contributors (ODbL)"
   },
-  "filters": { "guestUpcoming": "Upcoming guest spots" },
+  "filters": {
+    "guestUpcoming": "Upcoming guest spots"
+  },
   "location": {
     "ask": "📍 See studios near you: tap to use your location (only while using the app).",
     "openSettings": "📍 Location is off for Tatlas. Tap to open settings.",
@@ -58,5 +63,12 @@
     "unreachable": "Saved, but the server does not answer. Check IP, port and that phone and PC are on the same network.",
     "about": "About",
     "osmLicense": "OpenStreetMap data licence"
+  },
+  "demo": {
+    "title": "Demo mode",
+    "hint": "Use fictional data bundled in the app, no server needed. Studios, artists and images are made up.",
+    "badge": "DEMO MODE · fictional data",
+    "offer": "Want to try the app without a server?",
+    "start": "Use demo mode"
   }
 }
