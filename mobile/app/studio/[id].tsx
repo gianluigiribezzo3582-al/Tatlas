@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { fetchStudio } from '@/api/source';
+import { useAuth } from '@/auth/AuthProvider';
+import { Button } from '@/components/Form';
+import { isDemoMode } from '@/config/mode';
 import { Chip } from '@/components/Chip';
 import { LinkButton, Section } from '@/components/Section';
 import { StateMessage } from '@/components/StateMessage';
@@ -13,6 +16,7 @@ import { colors, spacing } from '@/theme';
 export default function StudioScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
+  const { user } = useAuth();
   const query = useQuery({ queryKey: ['studio', id], queryFn: () => fetchStudio(id) });
   const studio = query.data?.data;
 
@@ -108,9 +112,23 @@ export default function StudioScreen() {
           </Section>
         )}
 
-        <Section title={t('studio.claimTitle')}>
-          <Text style={styles.meta}>{t('studio.claimHint')}</Text>
-        </Section>
+        {!isDemoMode() && (
+          <Section title={t('studio.claimTitle')}>
+            <Text style={styles.meta}>{t('studio.claimHint')}</Text>
+            <Button
+              label={user ? t('claim.cta') : t('claim.loginCta')}
+              variant="secondary"
+              onPress={() =>
+                user
+                  ? router.push({
+                      pathname: '/claim/[id]',
+                      params: { id: studio.id, name: studio.name },
+                    })
+                  : router.push('/account/login')
+              }
+            />
+          </Section>
+        )}
 
         {studio.attribution && (
           <Text

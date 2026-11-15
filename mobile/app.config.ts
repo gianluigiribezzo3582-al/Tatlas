@@ -44,6 +44,16 @@ const config: ExpoConfig = {
         isAndroidBackgroundLocationEnabled: false,
       },
     ],
+    [
+      'expo-image-picker',
+      {
+        photosPermission: 'Tatlas accede alle foto solo per caricare i lavori del tuo portfolio.',
+        cameraPermission:
+          'Tatlas usa la fotocamera solo per fotografare i lavori del tuo portfolio.',
+        microphonePermission: false,
+      },
+    ],
+    'expo-secure-store',
     ['expo-build-properties', { android: { usesCleartextTraffic: allowCleartext } }],
   ],
   experiments: {

@@ -177,14 +177,24 @@ export function MapScreen() {
       <View style={[styles.top, { paddingTop: insets.top + spacing.sm }]} pointerEvents="box-none">
         <View style={styles.titleRow}>
           <Text style={styles.brand}>Tatlas</Text>
-          <Pressable
-            onPress={() => router.push('/settings')}
-            style={styles.iconButton}
-            accessibilityLabel={t('settings.title')}
-            testID="open-settings"
-          >
-            <Text style={styles.iconText}>⚙︎</Text>
-          </Pressable>
+          <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+            <Pressable
+              onPress={() => router.push('/account')}
+              style={styles.iconButton}
+              accessibilityLabel={t('account.title')}
+              testID="open-account"
+            >
+              <Text style={styles.iconText}>☺</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => router.push('/settings')}
+              style={styles.iconButton}
+              accessibilityLabel={t('settings.title')}
+              testID="open-settings"
+            >
+              <Text style={styles.iconText}>⚙︎</Text>
+            </Pressable>
+          </View>
         </View>
         <ScrollView
           horizontal

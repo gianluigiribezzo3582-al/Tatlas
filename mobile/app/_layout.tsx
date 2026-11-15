@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { AuthProvider } from '@/auth/AuthProvider';
 import { StateMessage } from '@/components/StateMessage';
 import { loadDemoMode } from '@/config/mode';
 import { loadApiUrl } from '@/config/server';
@@ -26,15 +27,17 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         {ready ? (
-          <Stack
-            screenOptions={{
-              headerTintColor: colors.ink,
-              headerBackTitle: t('common.back'),
-              contentStyle: { backgroundColor: colors.paper },
-            }}
-          >
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-          </Stack>
+          <AuthProvider>
+            <Stack
+              screenOptions={{
+                headerTintColor: colors.ink,
+                headerBackTitle: t('common.back'),
+                contentStyle: { backgroundColor: colors.paper },
+              }}
+            >
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+            </Stack>
+          </AuthProvider>
         ) : (
           <StateMessage loading />
         )}
