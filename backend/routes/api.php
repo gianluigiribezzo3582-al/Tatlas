@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\ManageStudioController;
 use App\Http\Controllers\Api\V1\MyArtistController;
 use App\Http\Controllers\Api\V1\MyPresenceController;
 use App\Http\Controllers\Api\V1\MyWorkController;
+use App\Http\Controllers\Api\V1\PasswordController;
 use App\Http\Controllers\Api\V1\RemovalRequestController;
 use App\Http\Controllers\Api\V1\StudioController;
 use App\Http\Controllers\Api\V1\StyleController;
@@ -26,12 +27,15 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::middleware('throttle:auth')->group(function () {
         Route::post('auth/register', [AuthController::class, 'register'])->name('auth.register');
         Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
+        Route::post('auth/forgot-password', [PasswordController::class, 'forgot'])->name('auth.forgot');
         Route::post('removal-requests', [RemovalRequestController::class, 'store'])->name('removal-requests.store');
     });
 
     Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
         Route::get('me', [AuthController::class, 'me'])->name('me');
+        Route::post('auth/email/resend', [PasswordController::class, 'resendVerification'])
+            ->middleware('throttle:auth')->name('auth.email.resend');
         Route::get('me/export', [AccountController::class, 'export'])->name('me.export');
         Route::delete('me', [AccountController::class, 'destroy'])->middleware('throttle:auth')->name('me.destroy');
 

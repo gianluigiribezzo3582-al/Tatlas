@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -33,6 +34,7 @@ class AuthController extends Controller
             'password' => $data['password'],
         ]);
         $user->forceFill(['role' => UserRole::from($data['role'] ?? 'user')])->save();
+        event(new Registered($user)); // sends the verification email
 
         return response()->json([
             'token' => $user->createToken($data['device_name'])->plainTextToken,

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\Web\AccountLinkController;
 use App\Http\Controllers\Web\PublicPageController;
 use App\Http\Controllers\Web\RemovalFormController;
 use App\Livewire\Admin\Dashboard;
@@ -23,6 +24,13 @@ Route::view('privacy', 'public.privacy', [
 ])->name('public.privacy');
 Route::get('rimozione', [RemovalFormController::class, 'show'])->name('public.removal');
 Route::post('rimozione', [RemovalFormController::class, 'store'])->middleware('throttle:auth')->name('public.removal.store');
+
+// Links opened from emails.
+Route::get('reset-password/{token}', [AccountLinkController::class, 'showReset'])->name('password.reset');
+Route::post('reset-password', [AccountLinkController::class, 'reset'])->middleware('throttle:auth')->name('password.update');
+Route::get('verify-email/{id}/{hash}', [AccountLinkController::class, 'verify'])
+    ->middleware(['signed', 'throttle:auth'])->whereNumber('id')->name('verification.verify');
+Route::get('account/{what}', [AccountLinkController::class, 'done'])->name('public.account-done');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {

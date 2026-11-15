@@ -31,6 +31,9 @@ services:
       DB_HOST: postgres
       AI_SERVICE_URL: http://ai-service:8001
       PHP_OPCACHE_ENABLE: "0"
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: "1025"
     ports:
       - "8000:8080"
     volumes:
@@ -48,6 +51,9 @@ services:
     environment:
       DB_HOST: postgres
       AI_SERVICE_URL: http://ai-service:8001
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: "1025"
     volumes:
       - ./backend:/var/www/html
     depends_on:
@@ -55,6 +61,12 @@ services:
         condition: service_started
       postgres:
         condition: service_healthy
+
+  # Catches every email sent in development: http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.21
+    ports:
+      - "8025:8025"
 
   ai-service:
     build: ./ai-service
