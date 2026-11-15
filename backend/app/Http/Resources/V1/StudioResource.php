@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V1;
 
+use App\Http\Controllers\Web\PublicPageController;
 use App\Models\Studio;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -27,6 +28,7 @@ class StudioResource extends JsonResource
             'artists_count' => $this->when(isset($this->artists_count), fn () => (int) $this->artists_count),
             'has_upcoming_guest' => $this->when(isset($this->has_upcoming_guest), fn () => (bool) $this->has_upcoming_guest),
             'source' => $this->source->value,
+            'public_url' => PublicPageController::studioUrl($this->resource),
         ];
     }
 }

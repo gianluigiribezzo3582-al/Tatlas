@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V1;
 
+use App\Http\Controllers\Web\PublicPageController;
 use App\Models\Artist;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -31,7 +32,7 @@ class ArtistResource extends JsonResource
                 ...(new StudioResource($studio))->toArray($request),
                 'presence' => (new PresenceResource($studio))->toArray($request),
             ])),
-            'public_url' => rtrim(config('tatlas.public_url'), '/').'/artisti/'.$this->slug,
+            'public_url' => PublicPageController::artistUrl($this->resource),
         ];
     }
 }
