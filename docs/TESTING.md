@@ -75,10 +75,34 @@ Al primo avvio, se l'app mostra "Server non raggiungibile":
 | 14 | Server | Impostazioni → indirizzo sbagliato → Salva e prova | Messaggio "il server non risponde"; "Ripristina" torna al valore predefinito |
 | 15 | Lingua | Imposta il telefono in inglese | Interfaccia e nomi degli stili in inglese |
 
+### Con il backend: funzioni da tatuatore e pannello admin
+
+Servono il PC e la modalità demo disattivata (⚙︎ → spegni "Modalità demo").
+
+Prima crea un amministratore sul PC:
+
+```bash
+docker compose exec app php artisan tatlas:make-admin tuo@email.it --password=una-password-lunga
+```
+
+| # | Funzione | Come provarla | Risultato atteso |
+|---|---|---|---|
+| 16 | Registrazione | ☺ in alto → Registrati, lascia attivo "Sono un tatuatore", accetta la privacy | Si apre direttamente il form del profilo artista |
+| 17 | Profilo artista | Nome d'arte, bio, Instagram (anche solo `@nome`), lingue, prezzo, fino a 5 stili → Salva | Nell'account compare "⏳ Profilo in attesa di verifica"; il profilo non appare ancora sulla mappa |
+| 18 | Verifica admin | Dal browser del PC apri <http://localhost:8000/admin>, accedi, scheda "Artisti da verificare" → **Verifica e pubblica** | Nell'app l'account mostra "✓ verificato" e il profilo è visibile pubblicamente |
+| 19 | Dove lavoro | Account → Dove lavoro → cerca lo studio per nome o città → Resident → Salva | Lo studio mostra il tuo profilo tra gli artisti |
+| 20 | Guest spot | Stesso percorso, scegli Guest spot e le date dal calendario | Lo studio diventa viola sulla mappa e compare con il filtro "Guest spot in arrivo" |
+| 21 | Nuovo studio | "Lo studio non c'è? Aggiungilo" → nome e indirizzo | Lo studio viene geolocalizzato con Photon e lo gestisci tu |
+| 22 | Portfolio | Account → Portfolio → Dalla galleria o Scatta foto → descrizione e stili → Pubblica | Il lavoro appare nella griglia e nella scheda pubblica. Il telefono ridimensiona e ricomprime la foto, il server la ricomprime di nuovo: posizione GPS e dati EXIF non vengono salvati. Massimo 12 lavori; tieni premuto un lavoro per eliminarlo |
+| 23 | Rivendica uno studio | Scheda di uno studio OSM → "Rivendica questo studio" → messaggio e link di prova | Nel pannello admin, scheda "Rivendicazioni": **Approva** ti assegna lo studio; **Rifiuta** richiede un motivo |
+| 24 | Rimozione GDPR | Per ora solo via API: `POST /api/v1/removal-requests` | Nel pannello admin, scheda "Richieste di rimozione": **Nascondi contenuto** lo toglie da mappa e API |
+| 25 | Logout | Account → Esci | Il token viene revocato sul server e cancellato dal telefono |
+
 ## Non ancora disponibile in questa build
 
-- Registrazione e login dall'app: l'API c'è già (`/api/v1/auth/*`), le schermate arrivano con F1.
-- Rivendicazione di uno studio, pannello admin, upload del portfolio: F1–F4.
+- Modifica dei dati di uno studio rivendicato dall'app (l'API `PATCH /studios/{id}` è pronta).
+- Modulo per la richiesta di rimozione GDPR nell'app e sul web (l'API è pronta).
+- Verifica dell'email e recupero password.
 - Pagina web pubblica dell'artista e link che aprono l'app (App Links): E2.
 - Ricerca intelligente "descrivi il tatuaggio": Fase 2.
 

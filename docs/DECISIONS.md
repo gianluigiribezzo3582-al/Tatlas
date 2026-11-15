@@ -101,6 +101,22 @@ I tag OSM grezzi restano in `osm_tags` (jsonb), utili per futuri mapping senza d
 **Perché:** permette di provare e mostrare l'app solo con il telefono. La tassonomia degli stili è esportata dal seeder del backend (`src/demo/styles.json`), così non può divergere.
 **Conseguenze:** ogni nuova chiamata API usata dalle schermate va aggiunta anche alla sorgente demo, oppure disabilitata in demo (per esempio login e upload).
 
+## ADR-022 · I nuovi profili artista restano privati fino alla verifica
+**Data:** 2026-11-15
+**Decisione:** un utente può creare un solo profilo artista (`claimed_by_user_id` univoco). Il profilo è subito modificabile ma esce da ricerca, mappa e dettaglio pubblico finché un admin non lo verifica (`tatlas.require_artist_verification`, attivo per default). Lo scope `Artist::visible()` applica la regola ovunque. Rivendicare uno studio esistente richiede l'approvazione di un admin. Chi crea uno studio nuovo ne diventa gestore. Le modifiche del gestore ai campi sincronizzati da OSM vengono aggiunte a `locked_fields`.
+**Perché:** impedisce che qualcuno si spacci per un tatuatore o per uno studio. Il costo è un passaggio manuale, sostenibile ai volumi di Bari.
+
+## ADR-023 · Pannello admin: Livewire 4 class-based, CSS inline, login di sessione separato
+**Decisione:** un unico componente `Admin\Dashboard` con tre schede. La logica sta in `app/Actions/Admin/*`, testabile senza UI. CSS inline nel layout: niente build Vite e niente Node per il backend. Il login di sessione è riservato agli admin, l'API mobile resta su token Sanctum. Gli admin si creano solo da console (`tatlas:make-admin`).
+
+## ADR-024 · Foto del portfolio: doppia ricompressione, niente metadati
+**Decisione:** l'app ridimensiona la foto a 2048 px e la ricodifica in JPEG prima dell'upload, così pesa meno su rete mobile. Il server la riapre con GD, applica l'orientamento EXIF, la ridimensiona (2048 px più una miniatura da 480 px) e la ricodifica. Il file salvato non contiene EXIF: niente GPS, modello del telefono o data.
+**Perché:** le foto dei tatuaggi si scattano col telefono, spesso nello studio o a casa del cliente. Non fidarsi del client è necessario, perché l'API è pubblica.
+**Conseguenze:** l'elaborazione è sincrona (pochi secondi al massimo). Se diventa un collo di bottiglia, va spostata in coda insieme al calcolo degli embedding della Fase 2.
+
+## ADR-025 · Token nel secure store del sistema operativo
+**Decisione:** il token Sanctum si salva con `expo-secure-store` (Keystore su Android, Keychain su iOS), mai in AsyncStorage. Il logout revoca il token anche sul server.
+
 ---
 
 ## Roadmap Fase 1
@@ -116,6 +132,7 @@ I tag OSM grezzi restano in `osm_tags` (jsonb), utili per futuri mapping senza d
 | D1–D4 Mappa nell'app | ✅ |
 | E1 Schermate studio e artista | ✅ |
 | E2 Pagina web pubblica artista + App Links | ⏳ |
-| F1–F4 Claim, admin, portfolio, stili e guest spot | ⏳ |
+| F1–F4 Claim, admin, portfolio, stili e guest spot | ✅ |
+| Modalità demo offline nell'app | ✅ |
 | G0 APK di test via GitHub Actions | ✅ |
 | G1–G2 Build EAS, privacy/GDPR | ⏳ |

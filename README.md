@@ -50,6 +50,21 @@ docker compose exec app php artisan tatlas:demo-data
 | GET | `/api/v1/styles` | Tassonomia ad albero, localizzata in base ad `Accept-Language` |
 | POST | `/api/v1/auth/register`, `/auth/login` | Restituiscono un token Sanctum (`device_name` obbligatorio; per la registrazione serve `accept_privacy`) |
 | POST | `/api/v1/auth/logout` · GET `/api/v1/me` | Header `Authorization: Bearer <token>` |
+| GET/POST/PATCH | `/api/v1/me/artist` | Profilo artista dell'utente: uno per account, privato finché un admin non lo verifica |
+| GET/POST/DELETE | `/api/v1/me/presences` | Studi da resident e guest spot (date obbligatorie per i guest) |
+| GET/POST/PATCH/DELETE | `/api/v1/me/works` | Portfolio (multipart `image`, max 12 lavori, 12 MB l'uno; EXIF rimosso) |
+| GET | `/api/v1/studios/search?q=` | Ricerca per nome o città |
+| POST · PATCH | `/api/v1/studios` · `/api/v1/studios/{id}` | Crea uno studio (geocodificato o con `lat`/`lng`) · modifica (solo titolare o admin) |
+| POST · GET | `/api/v1/studios/{id}/claim` · `/api/v1/me/claims` | Rivendicazione di uno studio |
+| POST | `/api/v1/removal-requests` | Richiesta di rimozione GDPR, senza account |
+
+## Pannello admin
+
+<http://localhost:8000/admin>: verifica dei nuovi profili, rivendicazioni, richieste di rimozione. Per creare un admin:
+
+```bash
+docker compose exec app php artisan tatlas:make-admin email@esempio.it --password=...
+```
 
 Servizi:
 
@@ -106,4 +121,4 @@ Per la build EAS (Play Store e iOS) servirà un account Expo; la guida arriverà
 
 ## Stato
 
-Vedi il piano della Fase 1 in `docs/DECISIONS.md` (sezione Roadmap). Fatto finora: setup (A1–A6), modello dati, stili, import OSM e geocoder (B1–B5), API v1 (C1–C4), mappa e schede nell'app (D1–D4, E1), APK di test via CI.
+Vedi il piano della Fase 1 in `docs/DECISIONS.md` (sezione Roadmap). Fatto finora: setup (A1–A6), modello dati, stili, import OSM e geocoder (B1–B5), API v1 (C1–C4), mappa e schede nell'app (D1–D4, E1), profili rivendicabili, pannello admin, portfolio, stili e guest spot (F1–F4), modalità demo e APK di test via CI.
