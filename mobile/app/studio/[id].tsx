@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 
 import { fetchStudio } from '@/api/source';
 import { useAuth } from '@/auth/AuthProvider';
@@ -68,6 +68,14 @@ export default function StudioScreen() {
           )}
           {studio.instagram_url && (
             <LinkButton label="Instagram" onPress={() => Linking.openURL(studio.instagram_url!)} />
+          )}
+          {studio.public_url && (
+            <LinkButton
+              label={t('artist.share')}
+              onPress={() =>
+                Share.share({ message: `${studio.name} su Tatlas: ${studio.public_url}` })
+              }
+            />
           )}
           {studio.email && (
             <LinkButton

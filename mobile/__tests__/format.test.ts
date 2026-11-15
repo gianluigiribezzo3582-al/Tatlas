@@ -1,3 +1,4 @@
+import { studioIdFromRef } from '@/lib/links';
 import { studiosToGeoJSON } from '@/features/map/geojson';
 import { formatAddress, formatDistance, formatPresenceDates, priceLabel } from '@/lib/format';
 
@@ -60,4 +61,11 @@ it('converts studios to GeoJSON points (lng, lat order)', () => {
   ]);
   expect(fc.features[0].geometry.coordinates).toEqual([16.8, 41.1]);
   expect(fc.features[0].properties).toEqual({ id: 7, name: 'Studio', guest: true, artists: 2 });
+});
+
+it('parses studio ids from public URLs', () => {
+  expect(studioIdFromRef('12-inchiostro-nero')).toBe(12);
+  expect(studioIdFromRef('7')).toBe(7);
+  expect(studioIdFromRef('abc')).toBeNull();
+  expect(studioIdFromRef(undefined)).toBeNull();
 });

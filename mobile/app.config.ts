@@ -1,9 +1,10 @@
 import type { ExpoConfig } from 'expo/config';
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL ?? 'http://10.0.2.2:8000/api/v1';
+const publicUrl = process.env.EXPO_PUBLIC_WEB_URL ?? 'https://tatlas.app';
+const publicHost = new URL(publicUrl).host;
 // Test builds talk to a backend on the LAN over plain HTTP; production builds must not.
 const allowCleartext = process.env.TATLAS_ALLOW_CLEARTEXT === '1';
-const publicUrl = process.env.EXPO_PUBLIC_WEB_URL ?? 'https://tatlas.app';
 
 const config: ExpoConfig = {
   name: 'Tatlas',
@@ -16,6 +17,7 @@ const config: ExpoConfig = {
   ios: {
     supportsTablet: false,
     bundleIdentifier: 'app.tatlas',
+    associatedDomains: [`applinks:${publicHost}`],
   },
   android: {
     package: 'app.tatlas',
@@ -27,6 +29,19 @@ const config: ExpoConfig = {
     },
     predictiveBackGestureEnabled: false,
     permissions: ['ACCESS_COARSE_LOCATION', 'ACCESS_FINE_LOCATION'],
+    // Android App Links: public web pages open in the app once
+    // https://<host>/.well-known/assetlinks.json lists this app's signing key.
+    intentFilters: [
+      {
+        action: 'VIEW',
+        autoVerify: true,
+        data: [
+          { scheme: 'https', host: publicHost, pathPrefix: '/artisti/' },
+          { scheme: 'https', host: publicHost, pathPrefix: '/studi/' },
+        ],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
+    ],
     blockedPermissions: ['ACCESS_BACKGROUND_LOCATION'],
   },
   web: {

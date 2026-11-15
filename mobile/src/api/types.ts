@@ -33,6 +33,7 @@ export type StudioSummary = {
   artists_count?: number;
   has_upcoming_guest?: boolean;
   source: 'osm' | 'user';
+  public_url?: string;
 };
 
 export type Work = {
