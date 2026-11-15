@@ -17,6 +17,8 @@ import { fetchArtist } from '@/api/source';
 import { Chip } from '@/components/Chip';
 import { LinkButton, Section } from '@/components/Section';
 import { StateMessage } from '@/components/StateMessage';
+import { isDemoMode } from '@/config/mode';
+import { getWebUrl } from '@/config/server';
 import { imageSource } from '@/demo/images';
 import { formatAddress, formatPresenceDates, priceLabel } from '@/lib/format';
 import { colors, spacing } from '@/theme';
@@ -136,6 +138,14 @@ export default function ArtistScreen() {
               Share.share({ message: `${artist.name} su Tatlas: ${artist.public_url}` })
             }
           />
+          {!isDemoMode() && (
+            <LinkButton
+              label={t('common.report')}
+              onPress={() =>
+                Linking.openURL(`${getWebUrl()}/rimozione?tipo=artist&id=${artist.id}`)
+              }
+            />
+          )}
         </Section>
       </ScrollView>
     </>

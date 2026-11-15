@@ -104,3 +104,5 @@ export const createStudio = (input: {
   lat?: number;
   lng?: number;
 }) => apiSend<Item<StudioSummary>>('POST', 'studios', input);
+
+export const deleteAccount = (password: string) => apiSend<void>('DELETE', 'me', { password });

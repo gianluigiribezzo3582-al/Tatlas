@@ -7,7 +7,8 @@
     "loading": "Caricamento…",
     "loadError": "Impossibile caricare i dati.",
     "retry": "Riprova",
-    "back": "Indietro"
+    "back": "Indietro",
+    "report": "Segnala un errore o chiedi la rimozione"
   },
   "map": {
     "studiosInArea_one": "{{count}} studio in quest'area",
@@ -128,7 +129,11 @@
     "publish": "Pubblica",
     "uploadError": "Caricamento non riuscito.",
     "deleteWork": "Eliminare questo lavoro?",
-    "longPressDelete": "Tieni premuto un lavoro per eliminarlo."
+    "longPressDelete": "Tieni premuto un lavoro per eliminarlo.",
+    "privacyLink": "Leggi l'informativa privacy",
+    "deleteTitle": "Elimina account",
+    "deleteWarning": "Verranno cancellati definitivamente account, profilo artista, foto del portfolio e collegamenti agli studi. Gli studi che gestisci resteranno senza titolare. Non si può annullare.",
+    "deleteConfirm": "Elimina definitivamente"
   },
   "claim": {
     "title": "Rivendica lo studio",

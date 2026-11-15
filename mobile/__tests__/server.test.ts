@@ -1,4 +1,4 @@
-import { getApiUrl, loadApiUrl, normalizeApiUrl, saveApiUrl } from '@/config/server';
+import { getApiUrl, getWebUrl, loadApiUrl, normalizeApiUrl, saveApiUrl } from '@/config/server';
 
 describe('normalizeApiUrl', () => {
   it.each([
@@ -21,4 +21,10 @@ it('persists the chosen server and restores the default on reset', async () => {
 
   await saveApiUrl(null);
   expect(getApiUrl()).toBe('http://10.0.2.2:8000/api/v1');
+});
+
+it('derives the web base URL from the API URL', async () => {
+  await saveApiUrl('http://192.168.1.20:8000/api/v1');
+  expect(getWebUrl()).toBe('http://192.168.1.20:8000');
+  await saveApiUrl(null);
 });

@@ -1,12 +1,13 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Switch, Text, View } from 'react-native';
+import { Linking, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { errorMessage, fieldErrors } from '@/api/client';
 import { useAuth } from '@/auth/AuthProvider';
 import { Button, Field, Notice } from '@/components/Form';
 import { FormScreen } from '@/components/Screen';
+import { getWebUrl } from '@/config/server';
 import { colors } from '@/theme';
 
 export default function RegisterScreen() {
@@ -71,6 +72,9 @@ export default function RegisterScreen() {
         <Text style={styles.text}>{t('account.privacy')}</Text>
         <Switch value={privacy} onValueChange={setPrivacy} testID="privacy-switch" />
       </View>
+      <Text style={styles.link} onPress={() => Linking.openURL(`${getWebUrl()}/privacy`)}>
+        {t('account.privacyLink')}
+      </Text>
       {errors.accept_privacy && <Text style={styles.error}>{t('account.privacyRequired')}</Text>}
       <Button label={t('account.register')} onPress={submit} busy={busy} />
     </FormScreen>
@@ -81,4 +85,5 @@ const styles = StyleSheet.create({
   switchRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   text: { flex: 1, fontSize: 14, color: colors.ink },
   error: { fontSize: 12, color: colors.danger },
+  link: { fontSize: 14, color: colors.accent, fontWeight: '600' },
 });

@@ -7,7 +7,8 @@
     "loading": "Loading…",
     "loadError": "Could not load data.",
     "retry": "Retry",
-    "back": "Back"
+    "back": "Back",
+    "report": "Report a mistake or request removal"
   },
   "map": {
     "studiosInArea_one": "{{count}} studio in this area",
@@ -128,7 +129,11 @@
     "publish": "Publish",
     "uploadError": "Upload failed.",
     "deleteWork": "Delete this work?",
-    "longPressDelete": "Long-press a work to delete it."
+    "longPressDelete": "Long-press a work to delete it.",
+    "privacyLink": "Read the privacy notice",
+    "deleteTitle": "Delete account",
+    "deleteWarning": "Your account, artist profile, portfolio photos and studio links will be permanently deleted. Studios you manage will lose their owner. This cannot be undone.",
+    "deleteConfirm": "Delete permanently"
   },
   "claim": {
     "title": "Claim this studio",

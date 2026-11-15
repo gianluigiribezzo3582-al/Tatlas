@@ -7,6 +7,7 @@ import { fetchStudio } from '@/api/source';
 import { useAuth } from '@/auth/AuthProvider';
 import { Button } from '@/components/Form';
 import { isDemoMode } from '@/config/mode';
+import { getWebUrl } from '@/config/server';
 import { Chip } from '@/components/Chip';
 import { LinkButton, Section } from '@/components/Section';
 import { StateMessage } from '@/components/StateMessage';
@@ -138,6 +139,15 @@ export default function StudioScreen() {
           </Section>
         )}
 
+        {!isDemoMode() && (
+          <Text
+            style={styles.report}
+            onPress={() => Linking.openURL(`${getWebUrl()}/rimozione?tipo=studio&id=${studio.id}`)}
+          >
+            {t('common.report')}
+          </Text>
+        )}
+
         {studio.attribution && (
           <Text
             style={styles.attribution}
@@ -200,5 +210,12 @@ const styles = StyleSheet.create({
   chips: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
   dates: { fontSize: 13, color: colors.guest, fontWeight: '600' },
   chevron: { fontSize: 22, color: colors.muted },
+  report: {
+    fontSize: 13,
+    color: colors.muted,
+    textAlign: 'center',
+    paddingTop: spacing.lg,
+    textDecorationLine: 'underline',
+  },
   attribution: { fontSize: 11, color: colors.muted, textAlign: 'center', padding: spacing.lg },
 });

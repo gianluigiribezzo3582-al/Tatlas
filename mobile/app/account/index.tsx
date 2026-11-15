@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { getMyArtist } from '@/api/account';
 import { useAuth } from '@/auth/AuthProvider';
@@ -9,6 +9,7 @@ import { Button, Notice } from '@/components/Form';
 import { FormScreen } from '@/components/Screen';
 import { StateMessage } from '@/components/StateMessage';
 import { isDemoMode } from '@/config/mode';
+import { getWebUrl } from '@/config/server';
 import { colors, spacing } from '@/theme';
 
 export default function AccountScreen() {
@@ -103,6 +104,11 @@ export default function AccountScreen() {
       )}
 
       <Button label={t('account.logout')} variant="secondary" onPress={signOut} />
+      <MenuItem
+        label={t('account.privacyLink')}
+        onPress={() => Linking.openURL(`${getWebUrl()}/privacy`)}
+      />
+      <MenuItem label={t('account.deleteTitle')} onPress={() => router.push('/account/delete')} />
     </FormScreen>
   );
 }

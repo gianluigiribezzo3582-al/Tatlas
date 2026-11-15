@@ -48,3 +48,8 @@ export async function saveApiUrl(url: string | null): Promise<string> {
   }
   return current;
 }
+
+/** Web base URL served by the same backend (public pages, privacy, removal form). */
+export function getWebUrl(): string {
+  return getApiUrl().replace(/\/api\/v1\/?$/, '');
+}
