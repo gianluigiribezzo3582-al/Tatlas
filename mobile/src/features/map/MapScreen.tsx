@@ -274,6 +274,7 @@ export function MapScreen() {
         ) : (
           <FlatList
             data={ordered}
+            contentContainerStyle={{ paddingBottom: insets.bottom + spacing.lg }}
             keyExtractor={(s) => String(s.id)}
             renderItem={({ item }) => (
               <StudioRow

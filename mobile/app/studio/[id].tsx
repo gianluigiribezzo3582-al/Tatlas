@@ -12,12 +12,14 @@ import { Chip } from '@/components/Chip';
 import { LinkButton, Section } from '@/components/Section';
 import { StateMessage } from '@/components/StateMessage';
 import { formatAddress, formatPresenceDates } from '@/lib/format';
+import { useBottomPadding } from '@/lib/useBottomPadding';
 import { colors, spacing } from '@/theme';
 
 export default function StudioScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const bottom = useBottomPadding();
   const query = useQuery({ queryKey: ['studio', id], queryFn: () => fetchStudio(id) });
   const studio = query.data?.data;
 
@@ -47,7 +49,7 @@ export default function StudioScreen() {
   return (
     <>
       <Stack.Screen options={{ title: studio.name }} />
-      <ScrollView style={styles.page} contentContainerStyle={{ paddingBottom: spacing.xl }}>
+      <ScrollView style={styles.page} contentContainerStyle={{ paddingBottom: bottom }}>
         <View style={styles.header}>
           <Text style={styles.name}>{studio.name}</Text>
           {address !== '' && <Text style={styles.meta}>{address}</Text>}
@@ -70,7 +72,7 @@ export default function StudioScreen() {
           {studio.instagram_url && (
             <LinkButton label="Instagram" onPress={() => Linking.openURL(studio.instagram_url!)} />
           )}
-          {studio.public_url && (
+          {studio.public_url && !isDemoMode() && (
             <LinkButton
               label={t('artist.share')}
               onPress={() =>

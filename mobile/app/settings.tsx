@@ -19,11 +19,13 @@ import { env } from '@/config/env';
 import { isDemoMode, setDemoMode } from '@/config/mode';
 import { getApiUrl, normalizeApiUrl, saveApiUrl } from '@/config/server';
 import { tileSource } from '@/map/tiles';
+import { useBottomPadding } from '@/lib/useBottomPadding';
 import { colors, spacing } from '@/theme';
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const bottom = useBottomPadding();
   const [value, setValue] = useState(getApiUrl());
   const [status, setStatus] = useState<{ ok: boolean; text: string } | null>(null);
   const [demo, setDemo] = useState(isDemoMode());
@@ -67,7 +69,11 @@ export default function SettingsScreen() {
   return (
     <>
       <Stack.Screen options={{ title: t('settings.title') }} />
-      <ScrollView style={styles.page} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        style={styles.page}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ paddingBottom: bottom }}
+      >
         <Section title={t('demo.title')}>
           <View style={styles.switchRow}>
             <Text style={[styles.meta, { flex: 1 }]}>{t('demo.hint')}</Text>

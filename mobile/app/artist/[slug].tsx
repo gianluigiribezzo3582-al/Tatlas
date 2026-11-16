@@ -21,12 +21,14 @@ import { isDemoMode } from '@/config/mode';
 import { getWebUrl } from '@/config/server';
 import { imageSource } from '@/demo/images';
 import { formatAddress, formatPresenceDates, priceLabel } from '@/lib/format';
+import { useBottomPadding } from '@/lib/useBottomPadding';
 import { colors, spacing } from '@/theme';
 
 export default function ArtistScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const { t, i18n } = useTranslation();
   const { width } = useWindowDimensions();
+  const bottom = useBottomPadding();
   const query = useQuery({ queryKey: ['artist', slug], queryFn: () => fetchArtist(slug) });
   const artist = query.data?.data;
 
@@ -57,7 +59,7 @@ export default function ArtistScreen() {
   return (
     <>
       <Stack.Screen options={{ title: artist.name }} />
-      <ScrollView style={styles.page} contentContainerStyle={{ paddingBottom: spacing.xl }}>
+      <ScrollView style={styles.page} contentContainerStyle={{ paddingBottom: bottom }}>
         <View style={styles.header}>
           <Text style={styles.name}>
             {artist.name}
@@ -135,7 +137,11 @@ export default function ArtistScreen() {
           <LinkButton
             label={t('artist.share')}
             onPress={() =>
-              Share.share({ message: `${artist.name} su Tatlas: ${artist.public_url}` })
+              Share.share({
+                message: isDemoMode()
+                  ? `${artist.name} su Tatlas (profilo demo)`
+                  : `${artist.name} su Tatlas: ${artist.public_url}`,
+              })
             }
           />
           {!isDemoMode() && (

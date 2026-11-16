@@ -2,9 +2,11 @@ import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
 
+import { useBottomPadding } from '@/lib/useBottomPadding';
 import { colors, spacing } from '@/theme';
 
 export function FormScreen({ title, children }: { title: string; children: ReactNode }) {
+  const bottom = useBottomPadding(48);
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -13,7 +15,7 @@ export function FormScreen({ title, children }: { title: string; children: React
       <Stack.Screen options={{ title }} />
       <ScrollView
         style={styles.page}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, { paddingBottom: bottom }]}
         keyboardShouldPersistTaps="handled"
       >
         {children}
@@ -24,5 +26,5 @@ export function FormScreen({ title, children }: { title: string; children: React
 
 const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: colors.paper },
-  content: { padding: spacing.lg, gap: spacing.md, paddingBottom: 48 },
+  content: { padding: spacing.lg, gap: spacing.md },
 });
