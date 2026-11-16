@@ -12,20 +12,37 @@ Per usare i dati veri del backend: **⚙︎ → disattiva "Modalità demo"** e i
 
 ## 1. Con il PC: avvia il backend
 
+Requisiti: **Docker Desktop** avviato e il repository scaricato (branch di sviluppo). Il primo avvio richiede qualche minuto.
+
+**Windows (PowerShell), dalla cartella del progetto:**
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\dev-setup.ps1 -Ip 192.168.1.20
+```
+
+**macOS / Linux / WSL:**
+
 ```bash
-cp backend/.env.example backend/.env
-docker compose up -d --build
-docker compose exec app composer install
-docker compose exec app php artisan key:generate
-docker compose exec app php artisan migrate --seed   # tabelle + tassonomia stili
-docker compose exec app php artisan storage:link      # servono le immagini del portfolio
-docker compose exec app php artisan tatlas:import-osm # studi reali da OpenStreetMap (Bari)
-docker compose exec app php artisan tatlas:demo-data  # 30 artisti FITTIZI con guest spot e immagini
+scripts/dev-setup.sh 192.168.1.20
+```
+
+Al posto di `192.168.1.20` metti l'IP del tuo PC (passo 2). Lo script:
+
+- crea `backend/.env` e lo imposta con il tuo IP;
+- avvia i container e installa le dipendenze;
+- crea il database con la tassonomia degli stili;
+- importa gli **studi reali da OpenStreetMap**;
+- aggiunge 30 artisti **fittizi** con guest spot e immagini. Gli studi OSM non hanno ancora artisti, quindi senza questi non vedresti schede artista. Aggiungi `-NoDemo` (o `--no-demo`) per saltarli.
+
+Poi crea il tuo amministratore:
+
+```bash
+docker compose exec app php artisan tatlas:make-admin tua@email.it --password=una-password-lunga
 ```
 
 Controlla che risponda: apri <http://localhost:8000/api/v1/styles> nel browser del PC.
 
-> I dati demo sono inventati: ogni artista demo ha uno slug che inizia con `demo-`. Si cancellano con `php artisan tatlas:demo-data --purge`. Se l'import OSM fallisce (Overpass a volte è sovraccarico), `tatlas:demo-data` crea anche 8 studi demo intorno a Bari, così l'app resta utilizzabile.
+> Gli artisti demo hanno slug che iniziano con `demo-` e si cancellano con `docker compose exec app php artisan tatlas:demo-data --purge`. Se l'import OSM fallisce perché Overpass a volte è sovraccarico, rilancialo più tardi con `docker compose exec app php artisan tatlas:import-osm`. Nel frattempo `tatlas:demo-data` crea 8 studi demo intorno a Bari.
 
 ## 2. Trova l'IP del PC
 
