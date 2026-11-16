@@ -2,7 +2,9 @@
 
 return [
     // Public web base URL (artist pages, share links, Android App Links).
-    'public_url' => env('TATLAS_PUBLIC_URL', 'https://tatlas.app'),
+    // Until a production domain exists it falls back to APP_URL, so share links point
+    // to the server you are actually running (e.g. http://192.168.1.20:8000).
+    'public_url' => env('TATLAS_PUBLIC_URL') ?: env('APP_URL', 'http://localhost:8000'),
 
     // Android App Links: package and comma-separated SHA-256 signing certificate fingerprints
     // (from `eas credentials` or the Play Console). Empty → assetlinks.json serves [].

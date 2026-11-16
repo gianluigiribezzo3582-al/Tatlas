@@ -142,3 +142,4 @@ it('silently drops honeypot submissions', function () {
 
     expect(RemovalRequest::count())->toBe(0);
 });
+

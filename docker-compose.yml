@@ -23,6 +23,10 @@ services:
     build:
       context: ./backend
       target: dev
+      args:
+        # Linux: export UID and GID (or put them in a .env next to this file).
+        USER_ID: ${UID:-1000}
+        GROUP_ID: ${GID:-1000}
     image: tatlas-backend:dev
     env_file:
       - path: ./backend/.env
@@ -31,6 +35,8 @@ services:
       DB_HOST: postgres
       AI_SERVICE_URL: http://ai-service:8001
       PHP_OPCACHE_ENABLE: "0"
+      # Listen on IPv4 only: some Docker setups have no IPv6 inside containers.
+      NGINX_LISTEN_IP_PROTOCOL: ipv4
       MAIL_MAILER: smtp
       MAIL_HOST: mailpit
       MAIL_PORT: "1025"

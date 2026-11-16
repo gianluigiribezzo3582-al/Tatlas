@@ -45,6 +45,7 @@ it('filters artists by style and by upcoming guest spots', function () {
 });
 
 it('shows an artist by slug with styles, works and current studios', function () {
+    config(['tatlas.public_url' => 'https://tatlas.test']);
     $studio = Studio::factory()->create(['name' => 'Home']);
     $artist = Artist::factory()->create(['slug' => 'mara-ink', 'name' => 'Mara']);
     $artist->styles()->attach(Style::where('slug', 'watercolor')->value('id'), ['weight' => 0.8]);
@@ -59,7 +60,7 @@ it('shows an artist by slug with styles, works and current studios', function ()
         ->assertJsonPath('data.studios.0.name', 'Home')
         ->assertJsonPath('data.studios.0.presence.type', 'resident')
         ->assertJsonPath('data.works.0.id', $work->id)
-        ->assertJsonPath('data.public_url', 'https://tatlas.app/artisti/mara-ink')
+        ->assertJsonPath('data.public_url', 'https://tatlas.test/artisti/mara-ink')
         ->assertJsonMissingPath('data.text_embedding');
 });
 
