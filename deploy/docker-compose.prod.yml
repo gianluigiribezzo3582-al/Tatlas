@@ -51,7 +51,8 @@ services:
   app:
     <<: *app
     environment:
-      AUTORUN_ENABLED: "true"            # migrate --force, storage:link, config/route/view cache
+      AUTORUN_ENABLED: "true"            # storage:link, config/route/view cache on start
+      AUTORUN_LARAVEL_MIGRATION: "false" # migrations run explicitly by server-setup.sh / update.sh
       PHP_OPCACHE_ENABLE: "1"
       NGINX_LISTEN_IP_PROTOCOL: ipv4
     volumes:

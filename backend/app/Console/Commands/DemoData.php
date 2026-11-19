@@ -10,6 +10,7 @@ use App\Models\Work;
 use App\Support\Geo\Point;
 use App\Support\Slugger;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -61,33 +62,33 @@ class DemoData extends Command
                 'name' => $name,
                 'slug' => Slugger::unique(Artist::class, 'demo-'.$name),
                 'bio' => 'Profilo dimostrativo con dati fittizi, creato per i test.',
-                'languages' => fake()->randomElement([['it'], ['it', 'en'], ['it', 'en', 'es']]),
-                'accepts_walk_in' => fake()->boolean(),
-                'price_range' => fake()->numberBetween(1, 3),
+                'languages' => Arr::random([['it'], ['it', 'en'], ['it', 'en', 'es']]),
+                'accepts_walk_in' => (bool) random_int(0, 1),
+                'price_range' => random_int(1, 3),
                 'instagram_url' => null,
             ]);
             $artist->forceFill(['is_verified' => true, 'verified_at' => now()])->save();
 
             $artist->styles()->attach(
-                collect(fake()->randomElements($styles, fake()->numberBetween(1, 3)))
-                    ->mapWithKeys(fn ($id) => [$id => ['weight' => fake()->randomFloat(2, 0.5, 1)]])
+                collect(Arr::random($styles, min(count($styles), random_int(1, 3))))
+                    ->mapWithKeys(fn ($id) => [$id => ['weight' => round(0.5 + lcg_value() * 0.5, 2)]])
                     ->all(),
             );
 
             $home = $studios->random();
             $artist->studios()->attach($home, ['type' => 'resident']);
 
-            if (fake()->boolean(40)) {
-                $start = now()->addDays(fake()->numberBetween(-2, 45))->startOfDay();
+            if (random_int(1, 100) <= 40) {
+                $start = now()->addDays(random_int(-2, 45))->startOfDay();
                 $others = $studios->where('id', '!=', $home->id);
                 $artist->studios()->attach($others->isEmpty() ? $home : $others->random(), [
                     'type' => 'guest',
                     'starts_at' => $start,
-                    'ends_at' => $start->copy()->addDays(fake()->numberBetween(1, 5)),
+                    'ends_at' => $start->copy()->addDays(random_int(1, 5)),
                 ]);
             }
 
-            foreach (range(0, fake()->numberBetween(1, 3)) as $position) {
+            foreach (range(0, random_int(1, 3)) as $position) {
                 $this->demoWork($artist, $position);
             }
         }
@@ -97,6 +98,12 @@ class DemoData extends Command
         return self::SUCCESS;
     }
 
+    /** Random float in [min, max] with 5 decimals (~1 m). Faker is dev-only, not in prod images. */
+    private static function between(float $min, float $max): float
+    {
+        return round($min + lcg_value() * ($max - $min), 5);
+    }
+
     private function demoStudio(int $i): Studio
     {
         $name = "Demo Studio {$i}";
@@ -104,7 +111,7 @@ class DemoData extends Command
         return Studio::create([
             'name' => $name,
             'slug' => Slugger::unique(Studio::class, 'demo-'.$name),
-            'location' => new Point(lat: fake()->randomFloat(5, 41.08, 41.14), lng: fake()->randomFloat(5, 16.82, 16.92)),
+            'location' => new Point(lat: self::between(41.08, 41.14), lng: self::between(16.82, 16.92)),
             'city' => 'Bari',
             'country_code' => 'IT',
             'source' => StudioSource::User,
