@@ -58,9 +58,12 @@ jobs:
             -o /dev/null -w '%{http_code}\n' | grep -q 201
           sleep 3
           id=$(curl -sk -u admin:secret-pass-12345 https://localhost/mail/api/v1/messages | jq -r '.messages[0].ID')
-          link=$(curl -sk -u admin:secret-pass-12345 "https://localhost/mail/api/v1/message/$id" | jq -r '.Text' | grep -o 'https://localhost/verify-email/[^ )]*' | head -1)
-          echo "link: ${link:0:50}..."
-          curl -sk -o /dev/null -w '%{http_code} %{redirect_url}\n' "$link" | grep -q '302 https://localhost/account/email'
+          link=$(curl -sk -u admin:secret-pass-12345 "https://localhost/mail/api/v1/message/$id" | jq -r '.HTML' \
+            | grep -o 'href="https://localhost/verify-email/[^"]*"' | head -1 | sed -e 's/^href="//' -e 's/"$//' -e 's/&amp;/\&/g')
+          echo "link: $link"
+          result=$(curl -sk -o /dev/null -w '%{http_code} %{redirect_url}' "$link")
+          echo "result: $result"
+          [ "$result" = "302 https://localhost/account/email" ]
 
       - name: Logs on failure
         if: failure()
