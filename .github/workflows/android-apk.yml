@@ -8,13 +8,13 @@ on:
   workflow_dispatch:
     inputs:
       api_url:
-        description: "Default API URL baked into the APK (can be changed in the app Settings)"
+        description: "API URL baked into the APK (empty = repository variable TATLAS_API_URL or LAN placeholder)"
         required: false
-        default: "http://192.168.1.20:8000/api/v1"
+        default: ""
       demo_default:
         description: "Start in demo mode (bundled fictional data) until a server is configured"
         type: boolean
-        default: true
+        default: false
   push:
     paths: ["mobile/**", ".github/workflows/android-apk.yml"]
 
@@ -30,9 +30,12 @@ jobs:
       run:
         working-directory: mobile
     env:
-      EXPO_PUBLIC_API_URL: ${{ inputs.api_url || 'http://192.168.1.20:8000/api/v1' }}
+      # Server priority: manual input > repository variable TATLAS_API_URL (public test
+      # server) > LAN placeholder. With a public server the APK starts on real data.
+      EXPO_PUBLIC_API_URL: ${{ inputs.api_url || vars.TATLAS_API_URL || 'http://192.168.1.20:8000/api/v1' }}
       TATLAS_ALLOW_CLEARTEXT: "1"
-      EXPO_PUBLIC_DEMO_DEFAULT: ${{ (github.event_name != 'workflow_dispatch' || inputs.demo_default) && '1' || '0' }}
+      # Demo first only when no real server is known (or when explicitly asked).
+      EXPO_PUBLIC_DEMO_DEFAULT: ${{ inputs.demo_default && '1' || ((inputs.api_url || vars.TATLAS_API_URL) && '0' || '1') }}
       EXPO_NO_TELEMETRY: "1"
     steps:
       - uses: actions/checkout@v5

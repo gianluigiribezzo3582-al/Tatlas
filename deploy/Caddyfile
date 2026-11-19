@@ -1,0 +1,21 @@
+# Automatic HTTPS (Let's Encrypt) for TATLAS_DOMAIN, e.g. 203-0-113-7.sslip.io
+{$TATLAS_DOMAIN} {
+	encode zstd gzip
+
+	handle /mail* {
+		basic_auth {
+			{$MAIL_UI_USER} {$MAIL_UI_HASH}
+		}
+		reverse_proxy mailpit:8025
+	}
+
+	handle {
+		reverse_proxy app:8080
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}

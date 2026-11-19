@@ -128,6 +128,12 @@ I tag OSM grezzi restano in `osm_tags` (jsonb), utili per futuri mapping senza d
 ## ADR-028 · Email transazionali in italiano, link verso pagine web
 **Decisione:** verifica email (link firmato, valido 60 minuti) e reset password puntano a pagine web del backend, non a deep link: funzionano da qualsiasi client di posta, anche senza l'app installata. Il reset revoca tutti i token Sanctum. La verifica email non blocca le funzioni: è un segnale in più per l'admin. In sviluppo le email finiscono in Mailpit.
 
+## ADR-029 · Server di test: una VM, Docker Compose, Caddy, sslip.io, aggiornamento pull
+**Data:** 2026-11-19
+**Decisione:** l'ambiente di test pubblico è una sola VM Ubuntu configurata da `deploy/server-setup.sh` al primo avvio (cloud-init). Lo stack è `deploy/docker-compose.prod.yml`: Caddy con HTTPS automatico, Postgres con PostGIS e pgvector, app (immagine `prod` con codice incluso e OPcache), worker della coda, scheduler (re-import OSM settimanale) e Mailpit dietro basic auth su `/mail`. Il dominio è `<ip>.sslip.io` (DNS wildcard gratuito, certificato Let's Encrypt), quindi niente acquisto di dominio finché il nome non è deciso. I segreti si generano sul server (`deploy/make-env.sh`) e non passano mai da git o dalla chat. Gli aggiornamenti funzionano in modalità *pull*: un timer systemd confronta il branch ogni 10 minuti e ricostruisce solo se ci sono novità, quindi non servono chiavi SSH su GitHub. Laravel si fida degli header `X-Forwarded-*` del proxy (`trustProxies`) per URL https, link firmati e cookie sicuri.
+**Verifica:** `deploy-smoke` in CI avvia lo stesso stack con l'immagine di produzione reale e controlla HTTPS, API, admin, pagine pubbliche, immagini del portfolio, Mailpit con autenticazione e il link di verifica email attraverso Caddy.
+**Perché:** costo minimo, nessun servizio gestito da configurare, tutto riproducibile. Lo stesso compose servirà come base per la produzione, aggiungendo SMTP vero, backup, R2 per le immagini e un dominio.
+
 ---
 
 ## Roadmap Fase 1

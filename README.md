@@ -119,6 +119,8 @@ npm start
 
 L'URL dell'API si imposta con `EXPO_PUBLIC_API_URL`. Il default `http://10.0.2.2:8000/api/v1` funziona sull'emulatore Android. Su un telefono fisico usa l'IP del PC nella rete locale, per esempio `EXPO_PUBLIC_API_URL=http://192.168.1.20:8000/api/v1 npm start`.
 
+**Server di test pubblico** (per provare dal telefono con dati reali, senza PC): [docs/DEPLOY.md](docs/DEPLOY.md).
+
 **APK di test pronto da installare:** viene compilato da GitHub Actions (workflow `android-apk`) a ogni modifica di `mobile/`. Guida passo passo, compreso come collegare il telefono al PC: [docs/TESTING.md](docs/TESTING.md).
 
 Per la build EAS (Play Store e iOS) servirà un account Expo; la guida arriverà con il task G1.

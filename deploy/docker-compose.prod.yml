@@ -1,0 +1,92 @@
+# Public test/staging server: one VM running everything, HTTPS by Caddy.
+# Started by deploy/server-setup.sh; settings in deploy/.env (generated there).
+name: tatlas-prod
+
+x-app: &app
+  build:
+    context: ../backend
+    target: prod
+  image: tatlas-backend:prod
+  env_file: .env
+  restart: unless-stopped
+  depends_on:
+    postgres:
+      condition: service_healthy
+
+services:
+  caddy:
+    image: caddy:2.8
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      TATLAS_DOMAIN: ${TATLAS_DOMAIN}
+      MAIL_UI_USER: ${MAIL_UI_USER:-tatlas}
+      MAIL_UI_HASH: ${MAIL_UI_HASH}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+  postgres:
+    build: ../docker/postgres
+    image: tatlas-postgres:prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tatlas
+      POSTGRES_USER: tatlas
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tatlas -d tatlas"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  app:
+    <<: *app
+    environment:
+      AUTORUN_ENABLED: "true"            # migrate --force, storage:link, config/route/view cache
+      PHP_OPCACHE_ENABLE: "1"
+      NGINX_LISTEN_IP_PROTOCOL: ipv4
+    volumes:
+      - uploads:/var/www/html/storage/app/public
+
+  worker:
+    <<: *app
+    command: ["php", "/var/www/html/artisan", "queue:work", "--tries=3", "--backoff=10"]
+    environment:
+      AUTORUN_ENABLED: "false"
+    healthcheck:
+      disable: true
+    volumes:
+      - uploads:/var/www/html/storage/app/public
+
+  scheduler:
+    <<: *app
+    command: ["php", "/var/www/html/artisan", "schedule:work"]
+    environment:
+      AUTORUN_ENABLED: "false"
+    healthcheck:
+      disable: true
+
+  # Test-phase mailbox: every email (verification, password reset) lands here,
+  # browsable at https://<domain>/mail with basic auth. Replace with a real SMTP
+  # provider before opening registrations to the public.
+  mailpit:
+    image: axllent/mailpit:v1.21
+    restart: unless-stopped
+    environment:
+      MP_WEBROOT: /mail
+      MP_MAX_MESSAGES: 2000
+
+volumes:
+  pgdata:
+  uploads:
+  caddy_data:
+  caddy_config:

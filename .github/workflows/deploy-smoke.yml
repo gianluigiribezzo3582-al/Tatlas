@@ -1,0 +1,68 @@
+name: deploy-smoke
+
+# Boots the production stack (deploy/docker-compose.prod.yml) exactly as the
+# server setup does, with Caddy on https://localhost, and checks the main flows.
+on:
+  push:
+    paths: ["backend/**", "deploy/**", "docker/**", ".github/workflows/deploy-smoke.yml"]
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Generate deploy/.env
+        run: deploy/make-env.sh localhost secret-pass-12345
+
+      - name: Build and start
+        working-directory: deploy
+        run: docker compose -f docker-compose.prod.yml up -d --build
+
+      - name: Migrate, seed, admin, demo data
+        working-directory: deploy
+        run: |
+          app() { docker compose -f docker-compose.prod.yml exec -T app "$@" </dev/null; }
+          for i in $(seq 1 60); do app php artisan migrate --force >/dev/null 2>&1 && break; sleep 5; done
+          app php artisan migrate --force
+          app php artisan db:seed --class=StyleSeeder --force
+          app php artisan tatlas:make-admin admin@example.com --password=secret-pass-12345
+          app php artisan tatlas:demo-data --artists=5
+
+      - name: Check endpoints over HTTPS
+        run: |
+          set -e
+          check() { code=$(curl -sk -o /dev/null -w '%{http_code}' "$@"); echo "$code $*"; [ "$code" = "$EXPECT" ]; }
+          EXPECT=200 check https://localhost/up
+          EXPECT=200 check https://localhost/api/v1/styles
+          EXPECT=200 check "https://localhost/api/v1/studios?bbox=16.25,40.72,17.53,41.32"
+          EXPECT=200 check https://localhost/admin/login
+          EXPECT=200 check https://localhost/privacy
+          EXPECT=401 check https://localhost/mail/
+          EXPECT=200 check -u admin:secret-pass-12345 https://localhost/mail/
+          EXPECT=308 check http://localhost/up
+          # Demo artist page and its portfolio image (GD, uploads volume, storage link)
+          slug=$(curl -sk "https://localhost/api/v1/artists?bbox=16.25,40.72,17.53,41.32" | jq -r '.data[0].slug')
+          EXPECT=200 check "https://localhost/artisti/$slug"
+          img=$(curl -sk "https://localhost/api/v1/artists/$slug" | jq -r '.data.works[0].image_url')
+          echo "image: $img"; case "$img" in https://localhost/storage/*) ;; *) exit 1;; esac
+          EXPECT=200 check "$img"
+
+      - name: Registration sends a verification email that verifies through Caddy
+        run: |
+          set -e
+          curl -sk -X POST https://localhost/api/v1/auth/register -H 'Accept: application/json' -H 'Content-Type: application/json' \
+            -d '{"name":"CI","email":"ci@example.com","password":"secret-pass","password_confirmation":"secret-pass","device_name":"ci","accept_privacy":true}' \
+            -o /dev/null -w '%{http_code}\n' | grep -q 201
+          sleep 3
+          id=$(curl -sk -u admin:secret-pass-12345 https://localhost/mail/api/v1/messages | jq -r '.messages[0].ID')
+          link=$(curl -sk -u admin:secret-pass-12345 "https://localhost/mail/api/v1/message/$id" | jq -r '.Text' | grep -o 'https://localhost/verify-email/[^ )]*' | head -1)
+          echo "link: ${link:0:50}..."
+          curl -sk -o /dev/null -w '%{http_code} %{redirect_url}\n' "$link" | grep -q '302 https://localhost/account/email'
+
+      - name: Logs on failure
+        if: failure()
+        working-directory: deploy
+        run: docker compose -f docker-compose.prod.yml logs --tail 80
